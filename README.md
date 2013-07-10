@@ -8,7 +8,7 @@ Just include `jsv4.php` from your code, and use the static methods on the `Jsv4`
 
 Usage:
 
-## `Jsv4::validate($data, $schema)`
+### `Jsv4::validate($data, $schema)`
 
 This usage returns an object of the following shape.
 ```json
@@ -20,7 +20,7 @@ This usage returns an object of the following shape.
 }
 ```
 
-The values in the `errors` array are similar to those for [tv4](https://github.com/geraintluff/tv4) (a JavaScript validator):
+The values in the `errors` array are similar to those for [tv4](https://github.com/geraintluff/tv4) (a similar project):
 
 ```json
 {
@@ -33,13 +33,13 @@ The values in the `errors` array are similar to those for [tv4](https://github.c
 
 The `code` property corresponds to a constant corresponding to the nature of the validation error, e.g. `JSV4_INVALID_TYPE`.  The names of these constants (and their values) match up exactly with the [constants from tv4](https://github.com/geraintluff/tv4/blob/master/source/api.js).
 
-## `Jsv4::isValid($data, $schema)`
+### `Jsv4::isValid($data, $schema)`
 
 If you just want to know the validation status, and don't care what the errors actually are, then this is a more concise way of getting it.
 
 It returns a boolean indicating whether the data correctly followed the schema.
 
-## `Jsv4::coerce($data, $schema)`
+### `Jsv4::coerce($data, $schema)`
 
 Sometimes, the data is not quite the correct shape - but it could be *made* the correct shape by simple modifications.
 
