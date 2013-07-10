@@ -1,0 +1,71 @@
+[
+	{
+		"method": "validate",
+		"title": "Property type-check passes",
+		"schema": {
+			"properties": {
+				"foo": {
+					"type": "string"
+				}
+			}
+		},
+		"data": {
+			"foo": "bar"
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Property type-check fails",
+		"schema": {
+			"properties": {
+				"foo": {
+					"type": "string"
+				}
+			}
+		},
+		"data": {
+			"foo": false
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath":"/foo",
+			"/errors/0/schemaPath": "/properties/foo/type"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Property type-check passes for non-objects",
+		"schema": {
+			"properties": {
+				"foo": {
+					"type": "string"
+				}
+			}
+		},
+		"data": [":)"],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Property type-check passes for missing property",
+		"schema": {
+			"properties": {
+				"bar": {
+					"type": "string"
+				}
+			}
+		},
+		"data": {
+			"foo": "text here"
+		},
+		"result": {
+			"/valid": true
+		}
+	}
+]

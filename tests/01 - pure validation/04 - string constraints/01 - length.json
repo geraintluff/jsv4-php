@@ -1,0 +1,54 @@
+[
+	{
+		"method": "validate",
+		"title": "minLength passed",
+		"schema": {
+			"minLength": 5
+		},
+		"data": "blah blah blah",
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "minLength failed",
+		"schema": {
+			"minLength": 5
+		},
+		"data": "blah",
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 200,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/minLength",
+			"/errors/0/message": "String must be at least 5 characters long"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "maxLength passed",
+		"schema": {
+			"maxLength": 5
+		},
+		"data": "blah",
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "maxLength failed",
+		"schema": {
+			"maxLength": 5
+		},
+		"data": "blah blah blah",
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 201,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/maxLength",
+			"/errors/0/message": "String must be at most 5 characters long"
+		}
+	}
+]

@@ -1,0 +1,134 @@
+[
+	{
+		"method": "coerce",
+		"title": "Numeric string -> number",
+		"schema": {"type": "number"},
+		"data": "15.2",
+		"result": {
+			"/valid": true,
+			"/value": 15.2
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Integer string -> integer",
+		"schema": {"type": "integer"},
+		"data": "15",
+		"result": {
+			"/valid": true,
+			"/value": 15
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Non-numerical string -!-> number",
+		"schema": {"type": "number"},
+		"data": "test",
+		"result": {
+			"/valid": false
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Non-integer string -!-> integer",
+		"schema": {"type": "integer"},
+		"data": "15.2",
+		"result": {
+			"/valid": false
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Number -> string",
+		"schema": {"type": "string"},
+		"data": 68.2521,
+		"result": {
+			"/valid": true,
+			"/value": "68.2521"
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Boolean -> string",
+		"schema": {"type": "string"},
+		"data": false,
+		"result": {
+			"/valid": true,
+			"/value": "false"
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Null -> string",
+		"schema": {"type": "string"},
+		"data": null,
+		"result": {
+			"/valid": true,
+			"/value": ""
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Boolean -> number (false)",
+		"schema": {"type": "number"},
+		"data": false,
+		"result": {
+			"/valid": true,
+			"/value": 0
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Boolean -> number (true)",
+		"schema": {"type": "number"},
+		"data": true,
+		"result": {
+			"/valid": true,
+			"/value": 1
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Boolean -> integer (false)",
+		"schema": {"type": "integer"},
+		"data": false,
+		"result": {
+			"/valid": true,
+			"/value": 0
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Boolean -> integer (true)",
+		"schema": {"type": "integer"},
+		"data": true,
+		"result": {
+			"/valid": true,
+			"/value": 1
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Number -> boolean",
+		"schema": {
+			"items": {"type": "boolean"}
+		},
+		"data": [1, "1", "true", "yes", 2],
+		"result": {
+			"/valid": true,
+			"/value": [true, true, true, true, true]
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Coerce to boolean (false)",
+		"schema": {
+			"items": {"type": "boolean"}
+		},
+		"data": [0, "0", "false", "no", null],
+		"result": {
+			"/valid": true,
+			"/value": [false, false, false, false, false]
+		}
+	}
+]

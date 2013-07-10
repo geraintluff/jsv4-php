@@ -1,0 +1,160 @@
+[
+	{
+		"method": "validate",
+		"title": "dependency required-check passes when property missing",
+		"schema": {
+			"dependencies": {
+				"foo": {
+					"required": ["bar"]
+				}
+			}
+		},
+		"data": {
+			"someOtherKey": true
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "dependency required-check fails when one property present",
+		"schema": {
+			"dependencies": {
+				"foo": {
+					"required": ["bar"]
+				}
+			}
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 302,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/dependencies/foo/required/0",
+			"/errors/0/message": "Missing required property: bar"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "dependency required-check passes when both properties exist",
+		"schema": {
+			"dependencies": {
+				"foo": {
+					"required": ["bar"]
+				}
+			}
+		},
+		"data": {
+			"foo": true,
+			"bar": true
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "dependency string passes when property missing",
+		"schema": {
+			"dependencies": {
+				"foo": "bar"
+			}
+		},
+		"data": {
+			"someOtherKey": true
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "dependency string fails when one property present",
+		"schema": {
+			"dependencies": {
+				"foo": "bar"
+			}
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 304,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/dependencies/foo",
+			"/errors/0/message": "Property foo depends on bar"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "dependency string passes when both properties exist",
+		"schema": {
+			"dependencies": {
+				"foo": "bar"
+			}
+		},
+		"data": {
+			"foo": true,
+			"bar": true
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "dependency array passes when property missing",
+		"schema": {
+			"dependencies": {
+				"foo": ["bar", "baz"]
+			}
+		},
+		"data": {
+			"someOtherKey": true
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "dependency array fails when one property missing",
+		"schema": {
+			"dependencies": {
+				"foo": ["bar", "baz"]
+			}
+		},
+		"data": {
+			"foo": true,
+			"bar": true
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 304,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/dependencies/foo/1",
+			"/errors/0/message": "Property foo depends on baz"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "dependency array passes when both properties exist",
+		"schema": {
+			"dependencies": {
+				"foo": ["bar", "baz"]
+			}
+		},
+		"data": {
+			"foo": true,
+			"bar": true,
+			"baz": true
+		},
+		"result": {
+			"/valid": true
+		}
+	}
+]

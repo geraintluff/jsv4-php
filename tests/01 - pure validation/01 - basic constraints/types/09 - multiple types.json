@@ -1,0 +1,55 @@
+[
+	{
+		"method": "validate",
+		"title": "Array passes array",
+		"schema": {"type": ["array"]},
+		"data": [true],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Array fails null",
+		"schema": {"type": ["array"]},
+		"data": null,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/type",
+			"/errors/0/message": "Invalid type: null"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Object/boolean passes object",
+		"schema": {"type": ["object", "boolean"]},
+		"data": {},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Object/boolean passes boolean",
+		"schema": {"type": ["object", "boolean"]},
+		"data": true,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Object/boolean fails null",
+		"schema": {"type": ["object", "boolean"]},
+		"data": null,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/type",
+			"/errors/0/message": "Invalid type: null"
+		}
+	}
+]

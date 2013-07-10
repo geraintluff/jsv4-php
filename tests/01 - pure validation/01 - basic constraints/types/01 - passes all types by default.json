@@ -1,0 +1,58 @@
+[
+	{
+		"method": "validate",
+		"title": "Empty schema passes object",
+		"schema": {},
+		"data": {
+			"foo": "bar"
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Empty schema passes array",
+		"schema": {},
+		"data": ["foo", true],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Empty schema passes string",
+		"schema": {},
+		"data": "testing, testing...",
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Empty schema passes number",
+		"schema": {},
+		"data": 15.52,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Empty schema passes boolean",
+		"schema": {},
+		"data": true,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Empty schema passes null",
+		"schema": {},
+		"data": null,
+		"result": {
+			"/valid": true
+		}
+	}
+]

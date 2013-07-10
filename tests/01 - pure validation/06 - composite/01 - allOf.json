@@ -1,0 +1,31 @@
+[
+	{
+		"method": "validate",
+		"title": "allOf type constraint passed",
+		"schema": {
+			"allOf": [
+				{"type": "number"}
+			]
+		},
+		"data": 4.5,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "allOf type constraint passed",
+		"schema": {
+			"allOf": [
+				{"type": "number"}
+			]
+		},
+		"data": "string value",
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/allOf/0/type"
+		}
+	}
+]

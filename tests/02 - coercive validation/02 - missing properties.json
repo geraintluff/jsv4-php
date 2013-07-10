@@ -1,0 +1,125 @@
+[
+	{
+		"method": "coerce",
+		"title": "Insert missing properties from default",
+		"schema": {
+			"properties": {
+				"foo": {},
+				"bar": {
+					"default": "default value"
+				}
+			},
+			"required": ["foo", "bar"]
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": true,
+			"/value": {
+				"foo": true,
+				"bar": "default value"
+			}
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Insert missing properties from available type (integer)",
+		"schema": {
+			"properties": {
+				"foo": {},
+				"bar": {
+					"type": "integer"
+				}
+			},
+			"required": ["foo", "bar"]
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": true,
+			"/value": {
+				"foo": true,
+				"bar": 0
+			}
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Insert missing properties from available type (string)",
+		"schema": {
+			"properties": {
+				"foo": {},
+				"bar": {
+					"type": ["string"]
+				}
+			},
+			"required": ["foo", "bar"]
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": true,
+			"/value": {
+				"foo": true,
+				"bar": ""
+			}
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Insert missing properties from available type (boolean preferred to string)",
+		"schema": {
+			"properties": {
+				"foo": {},
+				"bar": {
+					"type": ["string", "boolean"]
+				}
+			},
+			"required": ["foo", "bar"]
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": true,
+			"/value": {
+				"foo": true,
+				"bar": true
+			}
+		}
+	},
+	{
+		"method": "coerce",
+		"title": "Insert missing properties - recurse into sub-objects",
+		"schema": {
+			"properties": {
+				"foo": {},
+				"bar": {
+					"type": "object",
+					"properties": {
+						"x": {"type": "number"},
+						"y": {"type": "number", "default": 16}
+					},
+					"required": ["x", "y"]
+				}
+			},
+			"required": ["foo", "bar"]
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": true,
+			"/value": {
+				"foo": true,
+				"bar": {
+					"x": 0,
+					"y": 16
+				}
+			}
+		}
+	}
+]

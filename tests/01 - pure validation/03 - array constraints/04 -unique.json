@@ -1,0 +1,28 @@
+[
+	{
+		"method": "validate",
+		"title": "uniqueItems passes",
+		"schema": {
+			"uniqueItems": true
+		},
+		"data": [true, false, {"foo": "bar"}, {"foo": "not-bar"}],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "uniqueItems fails",
+		"schema": {
+			"uniqueItems": true
+		},
+		"data": [true, false, {"foo": "bar"}, {"foo": "bar"}],
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 402,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/uniqueItems",
+			"/errors/0/message": "Array items must be unique (items 2 and 3)"
+		}
+	}
+]

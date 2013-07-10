@@ -1,0 +1,52 @@
+[
+	{
+		"method": "validate",
+		"title": "oneOf passed",
+		"schema": {
+			"oneOf": [
+				{"type": "number"},
+				{"enum": [4, "four"]}
+			]
+		},
+		"data": "four",
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "oneOf failed multiple",
+		"schema": {
+			"oneOf": [
+				{"type": "number"},
+				{"enum": [4, "four"]}
+			]
+		},
+		"data": 4,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 12,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/oneOf",
+			"/errors/0/message": "Value satisfies more than one of the options (0 and 1)"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "oneOf failed",
+		"schema": {
+			"oneOf": [
+				{"type": "number"},
+				{"enum": [4, "four"]}
+			]
+		},
+		"data": false,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 11,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/oneOf",
+			"/errors/0/message": "Value must satisfy one of the options"
+		}
+	}
+]

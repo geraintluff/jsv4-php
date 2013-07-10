@@ -1,0 +1,56 @@
+[
+	{
+		"method": "validate",
+		"title": "maximum passed",
+		"schema": {
+			"maximum": 1.5
+		},
+		"data": 1.5,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "exclusive maximum passed",
+		"schema": {
+			"maximum": 1.5,
+			"exclusiveMaximum": true
+		},
+		"data": 0.5,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "maximum failed",
+		"schema": {
+			"maximum": 1.5
+		},
+		"data": 2,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 103,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/maximum",
+			"/errors/0/message": "Number must be <= 1.5"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "exclusive maximum failed",
+		"schema": {
+			"maximum": 1.5,
+			"exclusiveMaximum": true
+		},
+		"data": 1.5,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 104,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "",
+			"/errors/0/message": "Number must be < 1.5"
+		}
+	}
+]

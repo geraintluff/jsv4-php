@@ -1,0 +1,39 @@
+[
+	{
+		"method": "validate",
+		"title": "pattern passes",
+		"schema": {
+			"pattern": "[0-9]/[a-zA-Z]*"
+		},
+		"data": "5/blah",
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "pattern fails",
+		"schema": {
+			"pattern": "[0-9]/[a-zA-Z]*"
+		},
+		"data": "5-blah",
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 202,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/pattern",
+			"/errors/0/message": "String does not match pattern: [0-9]/[a-zA-Z]*"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "pattern is not anchored",
+		"schema": {
+			"pattern": "[0-9]/[a-zA-Z]*"
+		},
+		"data": "prefix 5/blah suffix",
+		"result": {
+			"/valid": true
+		}
+	}
+]

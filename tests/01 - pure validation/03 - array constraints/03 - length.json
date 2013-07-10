@@ -1,0 +1,54 @@
+[
+	{
+		"method": "validate",
+		"title": "minItems passes",
+		"schema": {
+			"minItems": 1
+		},
+		"data": [true],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "minItems fails",
+		"schema": {
+			"minItems": 2
+		},
+		"data": [true],
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 400,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/minItems",
+			"/errors/0/message": "Array is too short (must have at least 2 items)"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "maxItems passes",
+		"schema": {
+			"maxItems": 2
+		},
+		"data": [true],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "maxItems fails",
+		"schema": {
+			"maxItems": 2
+		},
+		"data": [true, 1, "one"],
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 401,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/maxItems",
+			"/errors/0/message": "Array is too long (must have at most 2 items)"
+		}
+	}
+]

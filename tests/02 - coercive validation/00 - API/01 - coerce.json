@@ -1,0 +1,11 @@
+{
+	"method": "coerce",
+	"schema": {},
+	"data": {
+		"foo": "bar"
+	},
+	"result": {
+		"/valid": true,
+		"/value": {"foo": "bar"}
+	}
+}

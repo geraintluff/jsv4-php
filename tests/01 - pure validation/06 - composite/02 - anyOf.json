@@ -1,0 +1,48 @@
+[
+	{
+		"method": "validate",
+		"title": "anyOf passed",
+		"schema": {
+			"anyOf": [
+				{"type": "number"},
+				{"enum": [4, "four"]}
+			]
+		},
+		"data": "four",
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "anyOf passed multiple",
+		"schema": {
+			"anyOf": [
+				{"type": "number"},
+				{"enum": [4, "four"]}
+			]
+		},
+		"data": 4,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "anyOf failed",
+		"schema": {
+			"anyOf": [
+				{"type": "number"},
+				{"enum": [4, "four"]}
+			]
+		},
+		"data": false,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 10,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/anyOf",
+			"/errors/0/message": "Value must satisfy at least one of the options"
+		}
+	}
+]

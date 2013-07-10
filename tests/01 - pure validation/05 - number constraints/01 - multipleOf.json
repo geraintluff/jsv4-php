@@ -1,0 +1,28 @@
+[
+	{
+		"method": "validate",
+		"title": "multipleOf passed",
+		"schema": {
+			"multipleOf": 1.5
+		},
+		"data": 4.5,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "multipleOf failed",
+		"schema": {
+			"multipleOf": 1.5
+		},
+		"data": 5.5,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 100,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/multipleOf",
+			"/errors/0/message": "Number must be a multiple of 1.5"
+		}
+	}
+]

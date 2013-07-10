@@ -1,0 +1,102 @@
+[
+	{
+		"method": "validate",
+		"title": "additionalItems type-check passes for single-length",
+		"schema": {
+			"items": [
+				{"type": "boolean"}
+			],
+			"additionalItems": {"type": "integer"}
+		},
+		"data": [true],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "additionalItems type-check passes for surplus length",
+		"schema": {
+			"items": [
+				{"type": "boolean"}
+			],
+			"additionalItems": {"type": "integer"}
+		},
+		"data": [true, 0, 1, 2],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "additionalItems type-check fails for surplus length",
+		"schema": {
+			"items": [
+				{"type": "boolean"}
+			],
+			"additionalItems": {"type": "integer"}
+		},
+		"data": [true, 0, 1, "two"],
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "/3",
+			"/errors/0/schemaPath": "/additionalItems/type"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "additionalItems:true passes for surplus length",
+		"schema": {
+			"items": [
+				{"type": "boolean"}
+			],
+			"additionalItems": true
+		},
+		"data": [true, 0, 1, 2],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "additionalItems:false fails for surplus length",
+		"schema": {
+			"items": [
+				{"type": "boolean"}
+			],
+			"additionalItems": false
+		},
+		"data": [true, 0],
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 403,
+			"/errors/0/dataPath": "/1",
+			"/errors/0/schemaPath": "/additionalItems",
+			"/errors/0/message": "Additional items (index 1 or more) are not allowed"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "additionalItems ignored for non-tuple-typing",
+		"schema": {
+			"items": {"type": "boolean"},
+			"additionalItems": {"type": "integer"}
+		},
+		"data": [true],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "additionalItems ignored when \"items\" not specified",
+		"schema": {
+			"additionalItems": {"type": "integer"}
+		},
+		"data": [true],
+		"result": {
+			"/valid": true
+		}
+	}
+]

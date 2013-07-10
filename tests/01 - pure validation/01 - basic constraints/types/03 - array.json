@@ -1,0 +1,78 @@
+[
+	{
+		"method": "validate",
+		"title": "Fails object",
+		"schema": {"type": "array"},
+		"data": {
+			"foo": "bar"
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/type",
+			"/errors/0/message": "Invalid type: object"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Passes array",
+		"schema": {"type": "array"},
+		"data": [null],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Fails string",
+		"schema": {"type": "array"},
+		"data": "test",
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/type",
+			"/errors/0/message": "Invalid type: string"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Fails number",
+		"schema": {"type": "array"},
+		"data": -0.001,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/type",
+			"/errors/0/message": "Invalid type: number"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Fails boolean",
+		"schema": {"type": "array"},
+		"data": false,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/type",
+			"/errors/0/message": "Invalid type: boolean"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Fails null",
+		"schema": {"type": "array"},
+		"data": null,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/type",
+			"/errors/0/message": "Invalid type: null"
+		}
+	}
+]

@@ -1,0 +1,38 @@
+[
+	{
+		"method": "validate",
+		"title": "patternProperties check passes",
+		"schema": {
+			"patternProperties": {
+				"^int": {"type": "integer"},
+				"^string": {"type": "string"}
+			}
+		},
+		"data": {
+			"intFive": 5,
+			"string5": "five"
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "patternProperties check fails",
+		"schema": {
+			"patternProperties": {
+				"^int": {"type": "integer"},
+				"^string": {"type": "string"}
+			}
+		},
+		"data": {
+			"intFive": "five"
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "/intFive",
+			"/errors/0/schemaPath": "/patternProperties/^int/type"
+		}
+	}
+]

@@ -1,0 +1,69 @@
+[
+	{
+		"method": "validate",
+		"title": "Enum passes (string comparison)",
+		"schema": {
+			"enum": ["one", "two", "three"]
+		},
+		"data": "two",
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Enum passes (object comparison)",
+		"schema": {
+			"enum": [{"one": 1}, {"two": 2}, {"three": 3}]
+		},
+		"data": {"two": 2},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Enum fails (string comparison)",
+		"schema": {
+			"enum": [1, 2, 3]
+		},
+		"data": 4,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 1,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/enum",
+			"/errors/0/message": "Value must be one of the enum options"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Enum fails (ensure correct type)",
+		"schema": {
+			"enum": [1, 2, 3]
+		},
+		"data": "2",
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 1,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/enum",
+			"/errors/0/message": "Value must be one of the enum options"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Enum fails (object comparison)",
+		"schema": {
+			"enum": [{"one": 1}, {"two": 2}, {"three": 3}]
+		},
+		"data": {"two": 2, "three": 3},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 1,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/enum",
+			"/errors/0/message": "Value must be one of the enum options"
+		}
+	}
+]

@@ -1,0 +1,89 @@
+[
+	{
+		"method": "validate",
+		"title": "Items type-check passes for zero-length array",
+		"schema": {
+			"items": {
+				"type": "boolean"
+			}
+		},
+		"data": [],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Items type-check passes for correct type",
+		"schema": {
+			"items": {
+				"type": "boolean"
+			}
+		},
+		"data": [true],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Items type-check fails",
+		"schema": {
+			"items": {
+				"type": "boolean"
+			}
+		},
+		"data": [5],
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "/0",
+			"/errors/0/schemaPath": "/items/type"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Tuple-typing type-check passes for single-length array",
+		"schema": {
+			"items": [
+				{"type": "boolean"},
+				{"type": "integer"}
+			]	
+		},
+		"data": [true],
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Tuple-typing type-check fails for full-length array",
+		"schema": {
+			"items": [
+				{"type": "boolean"},
+				{"type": "integer"}
+			]	
+		},
+		"data": [true, "test"],
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 0,
+			"/errors/0/dataPath": "/1",
+			"/errors/0/schemaPath": "/items/1/type"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "Tuple-typing type-check passes for over-length array",
+		"schema": {
+			"items": [
+				{"type": "boolean"},
+				{"type": "integer"}
+			]	
+		},
+		"data": [true, 5, "test"],
+		"result": {
+			"/valid": true
+		}
+	}
+]

@@ -1,0 +1,95 @@
+[
+	{
+		"method": "validate",
+		"title": "minProperties passes",
+		"schema": {
+			"minProperties": 1
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "minProperties fails",
+		"schema": {
+			"minProperties": 1
+		},
+		"data": {},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 300,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/minProperties",
+			"/errors/0/message": "Object cannot be empty"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "minProperties fails plural",
+		"schema": {
+			"minProperties": 2
+		},
+		"data": {},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 300,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/minProperties",
+			"/errors/0/message": "Object must have at least 2 defined properties"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "maxProperties passes",
+		"schema": {
+			"maxProperties": 1
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "maxProperties fails",
+		"schema": {
+			"maxProperties": 1
+		},
+		"data": {
+			"foo": true,
+			"bar": true
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 301,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/minProperties",
+			"/errors/0/message": "Object must have at most one defined property"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "maxProperties fails plural",
+		"schema": {
+			"maxProperties": 2
+		},
+		"data": {
+			"foo": true,
+			"bar": true,
+			"baz": true
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 301,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/minProperties",
+			"/errors/0/message": "Object must have at most 2 defined properties"
+		}
+	}
+]

@@ -1,0 +1,28 @@
+[
+	{
+		"method": "validate",
+		"title": "not passed",
+		"schema": {
+			"not": {"type": "integer"}
+		},
+		"data": 4.5,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "not failed",
+		"schema": {
+			"not": {"type": "integer"}
+		},
+		"data": 18,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 13,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/not",
+			"/errors/0/message": "Value satisfies prohibited schema"
+		}
+	}
+]

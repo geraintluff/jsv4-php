@@ -1,0 +1,10 @@
+{
+	"method": "validate",
+	"schema": {},
+	"data": {
+		"foo": "bar"
+	},
+	"result": {
+		"/valid": true
+	}
+}

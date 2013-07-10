@@ -1,0 +1,8 @@
+{
+	"method": "isValid",
+	"schema": {},
+	"data": {
+		"foo": "bar"
+	},
+	"result": true
+}

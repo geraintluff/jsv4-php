@@ -1,0 +1,44 @@
+[
+	{
+		"method": "validate",
+		"title": "required passes when properties exist",
+		"schema": {
+			"required": ["foo", "bar"]
+		},
+		"data": {
+			"foo": true,
+			"bar": false
+		},
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "required fails when properties missing",
+		"schema": {
+			"required": ["foo", "bar"]
+		},
+		"data": {
+			"foo": true
+		},
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 302,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/required/1",
+			"/errors/0/message": "Missing required property: bar"
+		}
+	},
+	{
+		"method": "validate",
+		"title": "required passes for non-objects",
+		"schema": {
+			"required": ["foo", "bar"]
+		},
+		"data": "string",
+		"result": {
+			"/valid": true
+		}
+	}
+]
