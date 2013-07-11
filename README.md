@@ -74,6 +74,7 @@ It can handle:
 
 * Fragments in URLs, using both JSON Pointer fragments and identification using `"id"`
 * Converts URIs in `"id"` and `"$ref"` to absolute (where possible)
+* Resolves `"$ref"`s, splicing the resulting value into the schema
 * Converts associative PHP arrays to objects - you can express your schema natively, but what you retrieve from the store is always an object.
 * Adds sub-schemas according to their `"id"` - by default, this only happens if `"id"` is a sub-path of the current schema URL.
 
