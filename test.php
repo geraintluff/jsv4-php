@@ -4,11 +4,12 @@ header('Content-Type: text/plain');
 
 require_once 'jsv4.php';
 require_once 'test-utils.php';
+require_once 'schema-store.php';
 
 $totalTestCount = 0;
 $failedTests = array();
 
-function runTest($key, $test) {
+function runJsonTest($key, $test) {
 	global $totalTestCount;
 	global $failedTests;
 	$totalTestCount++;
@@ -42,6 +43,19 @@ function runTest($key, $test) {
 	}
 }
 
+function runPhpTest($key, $filename) {
+	global $totalTestCount;
+	global $failedTests;
+	$totalTestCount++;
+	
+	try {
+		include_once $filename;
+	} catch (Exception $e) {
+		$failedTests[$key][] = $e->getMessage();
+		$failedTests[$key][] .= "    ".str_replace("\n", "\n    ", $e->getTraceAsString());
+	}
+}
+
 function runTests($directory, $indent="") {
 	global $failedTests;
 	if ($directory[strlen($directory) - 1] != "/") {
@@ -55,7 +69,10 @@ function runTests($directory, $indent="") {
 	$entries = scandir($directory);
 	foreach ($entries as $entry) {
 		$filename = $directory.$entry;
-		if (stripos($entry, '.json') && is_file($filename)) {
+		if (stripos($entry, '.php') && is_file($filename)) {
+			$key = substr($filename, 0, strlen($filename) - 4);
+			runPhpTest($key, $filename);
+		} else if (stripos($entry, '.json') && is_file($filename)) {
 			$testFileCount++;
 			$tests = json_decode(file_get_contents($filename));
 			if ($tests == NULL) {
@@ -73,7 +90,7 @@ function runTests($directory, $indent="") {
 				} else {
 					$key .= ": #{$index}";
 				}
-				runTest($key, $test);
+				runJsonTest($key, $test);
 				$testCount++;
 			}
 		}
