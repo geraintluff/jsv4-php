@@ -38,6 +38,9 @@ $schema = $store->get($urlBase."test-schema-2");
 if (!$schema->properties->foo->{'$ref'}) {
 	throw new Exception('$ref should still exist');
 }
+if (!recursiveEqual($store->missing(), array($urlBase."somewhere-else"))) {
+	throw new Exception('$store->missing() is not correct: '.json_encode($store->missing()).' is not '.json_encode(array($urlBase."somewhere-else")));
+}
 
 $otherSchema = json_decode('{
 	"title": "Somewhere else",
@@ -53,6 +56,9 @@ if ($fooSchema->title != "Somewhere else") {
 }
 if ($fooSchema->items->title != "Test schema 2") {
 	throw new Exception('$ref in somewhere-else was not resolved');
+}
+if (count($store->missing())) {
+	throw new Exception('There should be no more missing schemas');
 }
 
 ?>

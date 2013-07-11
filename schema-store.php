@@ -109,7 +109,11 @@ class SchemaStore {
 	private $schemas = array();
 	private $refs = array();
 	
-	function add($url, $schema, $trusted=FALSE) {
+	public function missing() {
+		return array_keys($this->refs);
+	}
+	
+	public function add($url, $schema, $trusted=FALSE) {
 		$urlParts = explode("#", $url);
 		$baseUrl = array_shift($urlParts);
 		$fragment = urldecode(implode("#", $urlParts));
@@ -174,7 +178,7 @@ class SchemaStore {
 		}
 	}
 	
-	function get($url) {
+	public function get($url) {
 		if (isset($this->schemas[$url])) {
 			return $this->schemas[$url];
 		}
