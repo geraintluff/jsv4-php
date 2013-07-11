@@ -61,6 +61,28 @@ Perhaps the API needs a complete object (described using `"required"` in the sch
 
 `Jsv4::coerce()` will attempt to insert appropriate values for the missing properties, using a default (if it is defined in a nearby `"properties"` entry) or by creating a value if it knows the type.
 
+## The `SchemaStore` class
+
+This class represents a collection of schemas.  You use it like this:
+```php
+$store = new SchemaStore();
+$store->add($url, $schema);
+$retrieved = $store->get($url);
+```
+
+It can handle:
+
+* Fragments in URLs, using both JSON Pointer fragments and identification using `"id"`
+* Converts URIs in `"id"` and `"$ref"` to absolute (where possible)
+* Converts associative PHP arrays to objects - you can express your schema natively, but what you retrieve from the store is always an object.
+* Adds sub-schemas according to their `"id"` - by default, this only happens if `"id"` is a sub-path of the current schema URL.
+
+If the schemas being added are "trusted", then an extra argument can be supplied: `$store->add($url, $schema, TRUE)`.  In that case, the value of `"id"` is *always* believed for all sub-schemas.
+
+A list of "missing" schemas (unresolved `"$ref"`s) can be retrieved used `$store->missing()`.
+
+This class does not depend on `jsv4.php` at all - it just deals with raw schema objects.  As such, it could (hopefully) be used with other validators with minimal fuss.
+
 ## Tests
 
 The tests can be run using `test.php` (from the command-line or via the web).
