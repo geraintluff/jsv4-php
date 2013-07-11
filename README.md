@@ -63,7 +63,7 @@ Perhaps the API needs a complete object (described using `"required"` in the sch
 
 ## The `SchemaStore` class
 
-This class represents a collection of schemas.  You use it like this:
+This class represents a collection of schemas.  You include it from `schema-store.php`, and use it like this:
 ```php
 $store = new SchemaStore();
 $store->add($url, $schema);
