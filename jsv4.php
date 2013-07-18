@@ -105,6 +105,7 @@ class Jsv4 {
 	private $data;
 	private $schema;
 	private $firstErrorOnly;
+	private $coerce;
 	public $valid;
 	public $errors;
 	
@@ -395,7 +396,8 @@ class Jsv4 {
 		}
 		if (isset($this->schema->pattern)) {
 			$pattern = $this->schema->pattern;
-			$result = preg_match("/".str_replace($pattern, "/", "\\/")."/", $this->data);
+			$patternFlags = isset($this->schema->patternFlags) ? $this->schema->patternFlags : '';
+			$result = preg_match("/".str_replace("/", "\\/", $pattern)."/".$patternFlags, $this->data);
 			if ($result === 0) {
 				$this->fail(JSV4_STRING_PATTERN, "", "/pattern", "String does not match pattern: $pattern");
 			}
