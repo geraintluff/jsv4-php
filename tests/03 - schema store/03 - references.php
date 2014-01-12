@@ -44,7 +44,9 @@ if (!recursiveEqual($store->missing(), array($urlBase."somewhere-else"))) {
 
 $otherSchema = json_decode('{
 	"title": "Somewhere else",
-	"items": {"$ref": "'.$urlBase."test-schema-2".'"}
+	"items": [
+		{"$ref": "'.$urlBase."test-schema-2".'"}
+	]
 }');
 $store->add($urlBase."somewhere-else", $otherSchema);
 $fooSchema = $schema->properties->foo;
@@ -54,7 +56,7 @@ if ($fooSchema->{'$ref'}) {
 if ($fooSchema->title != "Somewhere else") {
 	throw new Exception('$ref does not point to correct place');
 }
-if ($fooSchema->items->title != "Test schema 2") {
+if ($fooSchema->items[0]->title != "Test schema 2") {
 	throw new Exception('$ref in somewhere-else was not resolved');
 }
 if (count($store->missing())) {
