@@ -50,7 +50,7 @@ $otherSchema = json_decode('{
 }');
 $store->add($urlBase."somewhere-else", $otherSchema);
 $fooSchema = $schema->properties->foo;
-if ($fooSchema->{'$ref'}) {
+if (property_exists($fooSchema, '$ref')) {
 	throw new Exception('$ref should have been resolved');
 }
 if ($fooSchema->title != "Somewhere else") {
