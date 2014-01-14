@@ -1,0 +1,21 @@
+{
+    "name": "geraintluff/jsv4",
+    "description": "A (coercive) JSON Schema v4 Validator for PHP",
+    "keywords": ["JSON Schema", "JSON", "schema", "validator", "v4", "Geraint Luff", "geraintluff"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Geraint Luff",
+            "email": "luffgd@gmail.com"
+        }
+    ],
+    "require": {
+
+    },
+    "autoload": {
+        "classmap": [
+            "jsv4.php",
+            "schema-store.php"
+        ]
+    }
+}
