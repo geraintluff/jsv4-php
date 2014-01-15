@@ -122,7 +122,7 @@ class SchemaStore {
 		$trustBase = $trustBase[0];
 
 		$this->schemas[$url] =& $schema;
-		$this->normaliseSchema($url, $schema, $trusted ? TRUE : $trustBase);
+		$this->normalizeSchema($url, $schema, $trusted ? TRUE : $trustBase);
 		if ($fragment == "") {
 			$this->schemas[$baseUrl] = $schema;
 		}
@@ -137,7 +137,7 @@ class SchemaStore {
 		}
 	}
 	
-	private function normaliseSchema($url, &$schema, $trustPrefix) {
+	private function normalizeSchema($url, &$schema, $trustPrefix) {
 		if (is_array($schema) && !self::isNumericArray($schema)) {
 			$schema = (object)$schema;
 		}
@@ -168,12 +168,12 @@ class SchemaStore {
 			}
 			foreach ($schema as $key => &$value) {
 				if ($key != "enum") {
-					self::normaliseSchema($url, $value, $trustPrefix);
+					self::normalizeSchema($url, $value, $trustPrefix);
 				}
 			}
 		} else if (is_array($schema)) {
 			foreach ($schema as &$value) {
-				self::normaliseSchema($value);
+				self::normalizeSchema($url, $value, $trustPrefix);
 			}
 		}
 	}
