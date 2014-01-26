@@ -82,25 +82,25 @@ class SchemaStore {
 		}
 		
 		$result = "";
-		if ($baseParts['scheme']) {
+		if (isset($baseParts['scheme'])) {
 			$result .= $baseParts['scheme']."://";
-			if ($baseParts['user']) {
+			if (isset($baseParts['user'])) {
 				$result .= ":".$baseParts['user'];
-				if ($baseParts['pass']) {
+				if (isset($baseParts['pass'])) {
 					$result .= ":".$baseParts['pass'];
 				}
 				$result .= "@";
 			}
 			$result .= $baseParts['host'];
-			if ($baseParts['port']) {
+			if (isset($baseParts['port'])) {
 				$result .= ":".$baseParts['port'];
 			}
 		}
 		$result .= $baseParts["path"];
-		if ($baseParts['query']) {
+		if (isset($baseParts['query'])) {
 			$result .= "?".$baseParts['query'];
 		}
-		if ($baseParts['fragment']) {
+		if (isset($baseParts['fragment'])) {
 			$result .= "#".$baseParts['fragment'];
 		}
 		return $result;
@@ -137,7 +137,7 @@ class SchemaStore {
 		}
 	}
 	
-	private function normalizeSchema($url, &$schema, $trustPrefix) {
+	private function normalizeSchema($url, &$schema, $trustPrefix = '') {
 		if (is_array($schema) && !self::isNumericArray($schema)) {
 			$schema = (object)$schema;
 		}
@@ -155,15 +155,9 @@ class SchemaStore {
 				}
 			} else if (isset($schema->id)) {
 				$schema->id = $url = self::resolveUrl($url, $schema->id);
-				if ($trustPrefix === TRUE
-						|| (substr($schema->id, 0, strlen($trustPrefix)) == $trustPrefix
-							&& ($trustPrefix[strlen($trustPrefix) - 1] == "/"
-								|| $schema->id[strlen($trustPrefix)] == "#"
-								|| $schema->id[strlen($trustPrefix)] == "?")
-						)) {
-					if (!isset($this->schemas[$schema->id])) {
-						$this->add($schema->id, $schema);
-					}
+				$regex = '/^'.preg_quote($trustPrefix, '/').'(?:[#\/?].*)?$/';
+				if (($trustPrefix === TRUE || preg_match($regex, $schema->id)) && !isset($this->schemas[$schema->id])) {
+					$this->add($schema->id, $schema);
 				}
 			}
 			foreach ($schema as $key => &$value) {
