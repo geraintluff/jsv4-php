@@ -404,16 +404,12 @@ class Jsv4 {
 		}
 	}
 
-	private function modulo($a, $b) {
-		return round( $a - $b * floor($a / $b), 10 );
-	}
-
 	private function checkNumber() {
 		if (is_string($this->data) || !is_numeric($this->data)) {
 			return;
 		}
 		if (isset($this->schema->multipleOf)) {
-			if ($this->modulo($this->data, $this->schema->multipleOf) != 0) {
+			if (fmod($this->data/$this->schema->multipleOf, 1) != 0) {
 				$this->fail(JSV4_NUMBER_MULTIPLE_OF, "", "/multipleOf", "Number must be a multiple of {$this->schema->multipleOf}");
 			}
 		}
