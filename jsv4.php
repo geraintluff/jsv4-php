@@ -68,7 +68,7 @@ class Jsv4 {
 				if (!isset($b->$key)) {
 					return FALSE;
 				}
-				if (!recursiveEqual($value, $b->$key)) {
+				if (!self::recursiveEqual($value, $b->$key)) {
 					return FALSE;
 				}
 			}
@@ -87,7 +87,7 @@ class Jsv4 {
 				if (!isset($b[$key])) {
 					return FALSE;
 				}
-				if (!recursiveEqual($value, $b[$key])) {
+				if (!self::recursiveEqual($value, $b[$key])) {
 					return FALSE;
 				}
 			}
@@ -108,7 +108,7 @@ class Jsv4 {
 	private $coerce;
 	public $valid;
 	public $errors;
-	
+
 	private function __construct(&$data, $schema, $firstErrorOnly=FALSE, $coerce=FALSE) {
 		$this->data =& $data;
 		$this->schema =& $schema;
@@ -246,7 +246,7 @@ class Jsv4 {
 		}
 		if (isset($this->schema->required)) {
 			foreach ($this->schema->required as $index => $key) {
-				if (!isset($this->data->$key)) {
+				if (!array_key_exists($key, (array) $this->data)) {
 					if ($this->coerce && $this->createValueForProperty($key)) {
 						continue;
 					}
@@ -403,13 +403,17 @@ class Jsv4 {
 			}
 		}
 	}
-	
+
+	private function modulo($a, $b) {
+		return round( $a - $b * floor($a / $b), 10 );
+	}
+
 	private function checkNumber() {
 		if (is_string($this->data) || !is_numeric($this->data)) {
 			return;
 		}
 		if (isset($this->schema->multipleOf)) {
-			if (fmod($this->data, $this->schema->multipleOf) != 0) {
+			if ($this->modulo($this->data, $this->schema->multipleOf) != 0) {
 				$this->fail(JSV4_NUMBER_MULTIPLE_OF, "", "/multipleOf", "Number must be a multiple of {$this->schema->multipleOf}");
 			}
 		}
@@ -490,7 +494,7 @@ class Jsv4 {
 			$schema = $this->schema->properties->$key;
 		} else if (isset($this->schema->patternProperties)) {
 			foreach ($this->schema->patternProperties as $pattern => $subSchema) {
-				if (preg_match("/".str_replace("/", "\\/", $pattern)."/")) {
+				if (preg_match("/".str_replace("/", "\\/", $pattern)."/", $key)) {
 					$schema = $subSchema;
 					break;
 				}
