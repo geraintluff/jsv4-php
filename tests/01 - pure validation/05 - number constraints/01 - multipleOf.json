@@ -24,5 +24,31 @@
 			"/errors/0/schemaPath": "/multipleOf",
 			"/errors/0/message": "Number must be a multiple of 1.5"
 		}
+	},
+	{
+		"method": "validate",
+		"title": "small number multipleOf passed",
+		"schema": {
+			"multipleOf": 0.0001
+		},
+		"data": 0.0075,
+		"result": {
+			"/valid": true
+		}
+	},
+	{
+		"method": "validate",
+		"title": "small number multipleOf failed",
+		"schema": {
+			"multipleOf": 0.0001
+		},
+		"data": 0.00751,
+		"result": {
+			"/valid": false,
+			"/errors/0/code": 100,
+			"/errors/0/dataPath": "",
+			"/errors/0/schemaPath": "/multipleOf",
+			"/errors/0/message": "Number must be a multiple of 0.0001"
+		}
 	}
 ]
