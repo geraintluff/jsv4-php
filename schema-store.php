@@ -127,8 +127,10 @@ class SchemaStore {
 			$this->schemas[$baseUrl] = $schema;
 		}
 		if (isset($this->refs[$baseUrl])) {
-			foreach ($this->refs[$baseUrl] as $fullUrl => &$refSchema) {
-				$refSchema = $this->get($fullUrl);
+			foreach ($this->refs[$baseUrl] as $fullUrl => $refSchemas) {
+				foreach ($refSchemas as &$refSchema) {
+					$refSchema = $this->get($fullUrl);
+				}
 				unset($this->refs[$baseUrl][$fullUrl]);
 			}
 			if (count($this->refs[$baseUrl]) == 0) {
@@ -151,7 +153,7 @@ class SchemaStore {
 					$urlParts = explode("#", $refUrl);
 					$baseUrl = array_shift($urlParts);
 					$fragment = urldecode(implode("#", $urlParts));
-					$this->refs[$baseUrl][$refUrl] =& $schema;
+					$this->refs[$baseUrl][$refUrl][] =& $schema;
 				}
 			} else if (isset($schema->id)) {
 				$schema->id = $url = self::resolveUrl($url, $schema->id);

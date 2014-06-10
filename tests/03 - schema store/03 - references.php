@@ -63,4 +63,25 @@ if (count($store->missing())) {
 	throw new Exception('There should be no more missing schemas');
 }
 
+// Add external $ref twice
+$schema = json_decode('{
+	"title": "Test schema 3 a",
+	"properties": {
+		"foo1": {"$ref": "'.$urlBase.'test-schema-3-b#/foo"},
+		"foo2": {"$ref": "'.$urlBase.'test-schema-3-b#/foo"}
+	}
+}');
+$store->add($urlBase."test-schema-3-a", $schema);
+$schema = json_decode('{
+	"title": "Test schema 3 b",
+	"foo": {"type": "object"}
+}');
+$schema = $store->add($urlBase."test-schema-3-b", $schema);
+$schema = $store->get($urlBase."test-schema-3-a");
+if (property_exists($schema->properties->foo1, '$ref')) {
+	throw new Exception('$ref was not resolved for foo1');
+}
+if (property_exists($schema->properties->foo2, '$ref')) {
+	throw new Exception('$ref was not resolved for foo2');
+}
 ?>
