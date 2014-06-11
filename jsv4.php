@@ -258,7 +258,7 @@ class Jsv4 {
 		if (isset($this->schema->properties)) {
 			foreach ($this->schema->properties as $key => $subSchema) {
 				$checkedProperties[$key] = TRUE;
-				if (isset($this->data->$key)) {
+				if (array_key_exists($key, (array) $this->data)) {
 					$subResult = $this->subResult($this->data->$key, $subSchema);
 					$this->includeSubResult($subResult, self::pointerJoin(array($key)), self::pointerJoin(array("properties", $key)));
 				}

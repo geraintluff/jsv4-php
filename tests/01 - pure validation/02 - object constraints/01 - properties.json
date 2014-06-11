@@ -67,5 +67,22 @@
 		"result": {
 			"/valid": true
 		}
+	},
+	{
+		"method": "validate",
+		"title": "Property type-check fails for null",
+		"schema": {
+			"properties": {
+				"foo": {
+					"type": "string"
+				}
+			}
+		},
+		"data": {
+			"foo": null
+		},
+		"result": {
+			"/valid": false
+		}
 	}
 ]
