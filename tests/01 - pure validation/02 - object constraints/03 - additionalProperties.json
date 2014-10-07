@@ -93,5 +93,31 @@
 		"result": {
 			"/valid": true
 		}
+	},
+	{
+		"method": "validate",
+		"title": "Github Issue #14",
+		"schema": {
+			"$schema": "http://json-schema.org/draft-04/schema#",
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			},
+			"required": ["id", "name"],
+			"additionalProperties": false
+		},
+		"data": {
+			"id": "12bfa5db-75e8-47cb-84cd-06520a867c45",
+			"name": "Mike",
+			"age": 71
+		},
+		"result": {
+			"/valid": false
+		}
 	}
 ]
