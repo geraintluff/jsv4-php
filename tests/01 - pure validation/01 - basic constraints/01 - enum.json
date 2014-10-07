@@ -65,5 +65,20 @@
 			"/errors/0/schemaPath": "/enum",
 			"/errors/0/message": "Value must be one of the enum options"
 		}
+	},
+	{
+		"method": "validate",
+		"title": "GitHub Issue #8",
+		"schema": {
+			"enum": ["one", "two", "three"]
+		},
+		"data": 2,
+		"result": {
+			 "/valid": false,
+			 "/errors/0/code": 1,
+			 "/errors/0/dataPath": "",
+			 "/errors/0/schemaPath": "/enum",
+			 "/errors/0/message": "Value must be one of the enum options"
+		}
 	}
 ]
