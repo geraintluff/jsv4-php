@@ -155,7 +155,7 @@ class SchemaStore {
 					$fragment = urldecode(implode("#", $urlParts));
 					$this->refs[$baseUrl][$refUrl][] =& $schema;
 				}
-			} else if (isset($schema->id)) {
+			} else if (isset($schema->id) && is_string($schema->id)) {
 				$schema->id = $url = self::resolveUrl($url, $schema->id);
 				$regex = '/^'.preg_quote($trustPrefix, '/').'(?:[#\/?].*)?$/';
 				if (($trustPrefix === TRUE || preg_match($regex, $schema->id)) && !isset($this->schemas[$schema->id])) {
