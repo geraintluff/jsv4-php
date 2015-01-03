@@ -1,5 +1,4 @@
 <?php
-
 define('JSV4_INVALID_TYPE', 0);
 define('JSV4_ENUM_MISMATCH', 1);
 define('JSV4_ANY_OF_MISSING', 10);
@@ -28,17 +27,54 @@ define('JSV4_ARRAY_LENGTH_LONG', 401);
 define('JSV4_ARRAY_UNIQUE', 402);
 define('JSV4_ARRAY_ADDITIONAL_ITEMS', 403);
 
-class Jsv4 {
-	static public function validate($data, $schema) {
+class Jsv4
+{
+
+	private $data;
+	private $schema;
+	private $firstErrorOnly;
+	private $coerce;
+	public $valid;
+	public $errors;
+
+	private function __construct(&$data, $schema, $firstErrorOnly = FALSE, $coerce = FALSE)
+	{
+		$this->data				 = & $data;
+		$this->schema			 = & $schema;
+		$this->firstErrorOnly	 = $firstErrorOnly;
+		$this->coerce			 = $coerce;
+		$this->valid			 = TRUE;
+		$this->errors			 = [];
+
+		try {
+			$this->checkTypes();
+			$this->checkEnum();
+			$this->checkObject();
+			$this->checkArray();
+			$this->checkString();
+			$this->checkNumber();
+			$this->checkComposite();
+		} catch (Jsv4Error $e) {
+
+		}
+	}
+
+
+	static public function validate($data, $schema)
+	{
 		return new Jsv4($data, $schema);
 	}
-	
-	static public function isValid($data, $schema) {
+
+
+	static public function isValid($data, $schema)
+	{
 		$result = new Jsv4($data, $schema, TRUE);
 		return $result->valid;
 	}
-	
-	static public function coerce($data, $schema) {
+
+
+	static public function coerce($data, $schema)
+	{
 		if (is_object($data) || is_array($data)) {
 			$data = unserialize(serialize($data));
 		}
@@ -48,18 +84,22 @@ class Jsv4 {
 		}
 		return $result;
 	}
-	
-	static public function pointerJoin($parts) {
+
+
+	static public function pointerJoin($parts)
+	{
 		$result = "";
 		foreach ($parts as $part) {
-			$part = str_replace("~", "~0", $part);
-			$part = str_replace("/", "~1", $part);
-			$result .= "/".$part;
+			$part	 = str_replace("~", "~0", $part);
+			$part	 = str_replace("/", "~1", $part);
+			$result .= "/" . $part;
 		}
 		return $result;
 	}
-	
-	static public function recursiveEqual($a, $b) {
+
+
+	static public function recursiveEqual($a, $b)
+	{
 		if (is_object($a)) {
 			if (!is_object($b)) {
 				return FALSE;
@@ -101,48 +141,26 @@ class Jsv4 {
 		return $a === $b;
 	}
 
-	
-	private $data;
-	private $schema;
-	private $firstErrorOnly;
-	private $coerce;
-	public $valid;
-	public $errors;
 
-	private function __construct(&$data, $schema, $firstErrorOnly=FALSE, $coerce=FALSE) {
-		$this->data =& $data;
-		$this->schema =& $schema;
-		$this->firstErrorOnly = $firstErrorOnly;
-		$this->coerce = $coerce;
-		$this->valid = TRUE;
-		$this->errors = array();
-
-		try {
-			$this->checkTypes();
-			$this->checkEnum();
-			$this->checkObject();
-			$this->checkArray();
-			$this->checkString();
-			$this->checkNumber();
-			$this->checkComposite();
-		} catch (Jsv4Error $e) {
-		}
-	}
-	
-	private function fail($code, $dataPath, $schemaPath, $errorMessage, $subErrors=NULL) {
-		$this->valid = FALSE;
-		$error = new Jsv4Error($code, $dataPath, $schemaPath, $errorMessage, $subErrors);
-		$this->errors[] = $error;
+	private function fail($code, $dataPath, $schemaPath, $errorMessage, $subErrors = NULL)
+	{
+		$this->valid	 = FALSE;
+		$error			 = new Jsv4Error($code, $dataPath, $schemaPath, $errorMessage, $subErrors);
+		$this->errors[]	 = $error;
 		if ($this->firstErrorOnly) {
 			throw $error;
 		}
 	}
-	
-	private function subResult(&$data, $schema, $allowCoercion=TRUE) {
+
+
+	private function subResult(&$data, $schema, $allowCoercion = TRUE)
+	{
 		return new Jsv4($data, $schema, $this->firstErrorOnly, $allowCoercion && $this->coerce);
 	}
-	
-	private function includeSubResult($subResult, $dataPrefix, $schemaPrefix) {
+
+
+	private function includeSubResult($subResult, $dataPrefix, $schemaPrefix)
+	{
 		if (!$subResult->valid) {
 			$this->valid = FALSE;
 			foreach ($subResult->errors as $error) {
@@ -150,8 +168,10 @@ class Jsv4 {
 			}
 		}
 	}
-	
-	private function checkTypes() {
+
+
+	private function checkTypes()
+	{
 		if (isset($this->schema->type)) {
 			$types = $this->schema->type;
 			if (!is_array($types)) {
@@ -179,20 +199,20 @@ class Jsv4 {
 				foreach ($types as $type) {
 					if ($type == "number") {
 						if (is_numeric($this->data)) {
-							$this->data = (float)$this->data;
+							$this->data = (float) $this->data;
 							return;
 						} else if (is_bool($this->data)) {
 							$this->data = $this->data ? 1 : 0;
 							return;
 						}
 					} else if ($type == "integer") {
-						if ((int)$this->data == $this->data) {
-							$this->data = (int)$this->data;
+						if ((int) $this->data == $this->data) {
+							$this->data = (int) $this->data;
 							return;
 						}
 					} else if ($type == "string") {
 						if (is_numeric($this->data)) {
-							$this->data = "".$this->data;
+							$this->data = "" . $this->data;
 							return;
 						} else if (is_bool($this->data)) {
 							$this->data = ($this->data) ? "true" : "false";
@@ -221,15 +241,17 @@ class Jsv4 {
 
 			$type = gettype($this->data);
 			if ($type == "double") {
-				$type = ((int)$this->data == $this->data) ? "integer" : "number";
+				$type = ((int) $this->data == $this->data) ? "integer" : "number";
 			} else if ($type == "NULL") {
 				$type = "null";
 			}
 			$this->fail(JSV4_INVALID_TYPE, "", "/type", "Invalid type: $type");
 		}
 	}
-	
-	private function checkEnum() {
+
+
+	private function checkEnum()
+	{
 		if (isset($this->schema->enum)) {
 			foreach ($this->schema->enum as $option) {
 				if (self::recursiveEqual($this->data, $option)) {
@@ -239,8 +261,10 @@ class Jsv4 {
 			$this->fail(JSV4_ENUM_MISMATCH, "", "/enum", "Value must be one of the enum options");
 		}
 	}
-	
-	private function checkObject() {
+
+
+	private function checkObject()
+	{
 		if (!is_object($this->data)) {
 			return;
 		}
@@ -254,7 +278,7 @@ class Jsv4 {
 				}
 			}
 		}
-		$checkedProperties = array();
+		$checkedProperties = [];
 		if (isset($this->schema->properties)) {
 			foreach ($this->schema->properties as $key => $subSchema) {
 				$checkedProperties[$key] = TRUE;
@@ -267,9 +291,9 @@ class Jsv4 {
 		if (isset($this->schema->patternProperties)) {
 			foreach ($this->schema->patternProperties as $pattern => $subSchema) {
 				foreach ($this->data as $key => &$subValue) {
-					if (preg_match("/".str_replace("/", "\\/", $pattern)."/", $key)) {
+					if (preg_match("/" . str_replace("/", "\\/", $pattern) . "/", $key)) {
 						$checkedProperties[$key] = TRUE;
-						$subResult = $this->subResult($this->data->$key, $subSchema);
+						$subResult				 = $this->subResult($this->data->$key, $subSchema);
 						$this->includeSubResult($subResult, self::pointerJoin(array($key)), self::pointerJoin(array("patternProperties", $pattern)));
 					}
 				}
@@ -321,8 +345,10 @@ class Jsv4 {
 			}
 		}
 	}
-	
-	private function checkArray() {
+
+
+	private function checkArray()
+	{
 		if (!is_array($this->data)) {
 			return;
 		}
@@ -339,7 +365,7 @@ class Jsv4 {
 					} else if (isset($this->schema->additionalItems)) {
 						$additionalItems = $this->schema->additionalItems;
 						if (!$additionalItems) {
-							$this->fail(JSV4_ARRAY_ADDITIONAL_ITEMS, "/{$index}", "/additionalItems", "Additional items (index ".count($items)." or more) are not allowed");
+							$this->fail(JSV4_ARRAY_ADDITIONAL_ITEMS, "/{$index}", "/additionalItems", "Additional items (index " . count($items) . " or more) are not allowed");
 						} else if ($additionalItems !== TRUE) {
 							$subResult = $this->subResult($subData, $additionalItems);
 							$this->includeSubResult($subResult, "/{$index}", "/additionalItems");
@@ -379,8 +405,10 @@ class Jsv4 {
 			}
 		}
 	}
-	
-	private function checkString() {
+
+
+	private function checkString()
+	{
 		if (!is_string($this->data)) {
 			return;
 		}
@@ -395,21 +423,23 @@ class Jsv4 {
 			}
 		}
 		if (isset($this->schema->pattern)) {
-			$pattern = $this->schema->pattern;
-			$patternFlags = isset($this->schema->patternFlags) ? $this->schema->patternFlags : '';
-			$result = preg_match("/".str_replace("/", "\\/", $pattern)."/".$patternFlags, $this->data);
+			$pattern		 = $this->schema->pattern;
+			$patternFlags	 = isset($this->schema->patternFlags) ? $this->schema->patternFlags : '';
+			$result			 = preg_match("/" . str_replace("/", "\\/", $pattern) . "/" . $patternFlags, $this->data);
 			if ($result === 0) {
 				$this->fail(JSV4_STRING_PATTERN, "", "/pattern", "String does not match pattern: $pattern");
 			}
 		}
 	}
 
-	private function checkNumber() {
+
+	private function checkNumber()
+	{
 		if (is_string($this->data) || !is_numeric($this->data)) {
 			return;
 		}
 		if (isset($this->schema->multipleOf)) {
-			if (fmod($this->data/$this->schema->multipleOf, 1) != 0) {
+			if (fmod($this->data / $this->schema->multipleOf, 1) != 0) {
 				$this->fail(JSV4_NUMBER_MULTIPLE_OF, "", "/multipleOf", "Number must be a multiple of {$this->schema->multipleOf}");
 			}
 		}
@@ -438,16 +468,18 @@ class Jsv4 {
 			}
 		}
 	}
-	
-	private function checkComposite() {
+
+
+	private function checkComposite()
+	{
 		if (isset($this->schema->allOf)) {
 			foreach ($this->schema->allOf as $index => $subSchema) {
 				$subResult = $this->subResult($this->data, $subSchema, FALSE);
-				$this->includeSubResult($subResult, "", "/allOf/".(int)$index);
+				$this->includeSubResult($subResult, "", "/allOf/" . (int) $index);
 			}
 		}
 		if (isset($this->schema->anyOf)) {
-			$failResults = array();
+			$failResults = [];
 			foreach ($this->schema->anyOf as $index => $subSchema) {
 				$subResult = $this->subResult($this->data, $subSchema, FALSE);
 				if ($subResult->valid) {
@@ -458,8 +490,8 @@ class Jsv4 {
 			$this->fail(JSV4_ANY_OF_MISSING, "", "/anyOf", "Value must satisfy at least one of the options", $failResults);
 		}
 		if (isset($this->schema->oneOf)) {
-			$failResults = array();
-			$successIndex = NULL;
+			$failResults	 = [];
+			$successIndex	 = NULL;
 			foreach ($this->schema->oneOf as $index => $subSchema) {
 				$subResult = $this->subResult($this->data, $subSchema, FALSE);
 				if ($subResult->valid) {
@@ -483,14 +515,16 @@ class Jsv4 {
 			}
 		}
 	}
-	
-	private function createValueForProperty($key) {
+
+
+	private function createValueForProperty($key)
+	{
 		$schema = NULL;
 		if (isset($this->schema->properties->$key)) {
 			$schema = $this->schema->properties->$key;
 		} else if (isset($this->schema->patternProperties)) {
 			foreach ($this->schema->patternProperties as $pattern => $subSchema) {
-				if (preg_match("/".str_replace("/", "\\/", $pattern)."/", $key)) {
+				if (preg_match("/" . str_replace("/", "\\/", $pattern) . "/", $key)) {
 					$schema = $subSchema;
 					break;
 				}
@@ -517,7 +551,7 @@ class Jsv4 {
 				} elseif (in_array("object", $types)) {
 					$this->data->$key = new StdClass;
 				} elseif (in_array("array", $types)) {
-					$this->data->$key = array();
+					$this->data->$key = [];
 				} else {
 					return FALSE;
 				}
@@ -526,28 +560,6 @@ class Jsv4 {
 		}
 		return FALSE;
 	}
+
+
 }
-
-class Jsv4Error extends Exception {
-	public $code;
-	public $dataPath;
-	public $schemaPath;
-	public $message;
-
-	public function __construct($code, $dataPath, $schemaPath, $errorMessage, $subResults=NULL) {
-		parent::__construct($errorMessage);
-		$this->code = $code;
-		$this->dataPath = $dataPath;
-		$this->schemaPath = $schemaPath;
-		$this->message = $errorMessage;
-		if ($subResults) {
-			$this->subResults = $subResults;
-		}
-	}
-	
-	public function prefix($dataPrefix, $schemaPrefix) {
-		return new Jsv4Error($this->code, $dataPrefix.$this->dataPath, $schemaPrefix.$this->schemaPath, $this->message);
-	}
-}
-
-?>

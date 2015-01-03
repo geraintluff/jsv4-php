@@ -2,9 +2,11 @@
 
 header('Content-Type: text/plain');
 
-require_once 'jsv4.php';
+require_once 'src/Jsv4.php';
+require_once 'src/Jsv4Error.php';
+require_once 'src/SchemaStore.php';
 require_once 'test-utils.php';
-require_once 'schema-store.php';
+
 
 $totalTestCount = 0;
 $failedTests = array();
@@ -13,7 +15,7 @@ function runJsonTest($key, $test) {
 	global $totalTestCount;
 	global $failedTests;
 	$totalTestCount++;
-	
+
 	try {
 		if ($test->method == "validate") {
 			$result = Jsv4::validate($test->data, $test->schema);
@@ -47,7 +49,7 @@ function runPhpTest($key, $filename) {
 	global $totalTestCount;
 	global $failedTests;
 	$totalTestCount++;
-	
+
 	try {
 		include_once $filename;
 	} catch (Exception $e) {
@@ -62,10 +64,10 @@ function runTests($directory, $indent="") {
 		$directory .= "/";
 	}
 	$baseName = basename($directory);
-	
+
 	$testCount = 0;
 	$testFileCount = 0;
-	
+
 	$entries = scandir($directory);
 	foreach ($entries as $entry) {
 		$filename = $directory.$entry;
