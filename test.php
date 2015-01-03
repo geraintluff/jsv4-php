@@ -2,8 +2,8 @@
 
 header('Content-Type: text/plain');
 
-require_once 'src/Jsv4.php';
-require_once 'src/Jsv4Error.php';
+require_once 'src/Validator.php';
+require_once 'src/ValidationException.php';
 require_once 'src/SchemaStore.php';
 require_once 'test-utils.php';
 
@@ -18,11 +18,11 @@ function runJsonTest($key, $test) {
 
 	try {
 		if ($test->method == "validate") {
-			$result = Jsv4::validate($test->data, $test->schema);
+			$result = Validator::validate($test->data, $test->schema);
 		} else if ($test->method == "isValid") {
-			$result = Jsv4::isValid($test->data, $test->schema);
+			$result = Validator::isValid($test->data, $test->schema);
 		} else if ($test->method == "coerce") {
-			$result = Jsv4::coerce($test->data, $test->schema);
+			$result = Validator::coerce($test->data, $test->schema);
 		} else {
 			$failedTests[$key][] = ("Unknown method: {$test->method}");
 			return;

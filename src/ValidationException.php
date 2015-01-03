@@ -3,7 +3,7 @@
 /**
  * @author Martin Bažík <martin@bazo.sk>
  */
-class Jsv4Error extends RuntimeException
+class ValidationException extends RuntimeException
 {
 
 	public $code;
@@ -26,7 +26,7 @@ class Jsv4Error extends RuntimeException
 
 	public function prefix($dataPrefix, $schemaPrefix)
 	{
-		return new Jsv4Error($this->code, $dataPrefix . $this->dataPath, $schemaPrefix . $this->schemaPath, $this->message);
+		return new ValidationException($this->code, $dataPrefix . $this->dataPath, $schemaPrefix . $this->schemaPath, $this->message);
 	}
 
 

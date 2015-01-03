@@ -1,4 +1,5 @@
 <?php
+
 define('JSV4_INVALID_TYPE', 0);
 define('JSV4_ENUM_MISMATCH', 1);
 define('JSV4_ANY_OF_MISSING', 10);
@@ -27,7 +28,7 @@ define('JSV4_ARRAY_LENGTH_LONG', 401);
 define('JSV4_ARRAY_UNIQUE', 402);
 define('JSV4_ARRAY_ADDITIONAL_ITEMS', 403);
 
-class Jsv4
+class Validator
 {
 
 	private $data;
@@ -54,7 +55,7 @@ class Jsv4
 			$this->checkString();
 			$this->checkNumber();
 			$this->checkComposite();
-		} catch (Jsv4Error $e) {
+		} catch (ValidationException $e) {
 
 		}
 	}
@@ -62,13 +63,13 @@ class Jsv4
 
 	static public function validate($data, $schema)
 	{
-		return new Jsv4($data, $schema);
+		return new Validator($data, $schema);
 	}
 
 
 	static public function isValid($data, $schema)
 	{
-		$result = new Jsv4($data, $schema, TRUE);
+		$result = new Validator($data, $schema, TRUE);
 		return $result->valid;
 	}
 
@@ -78,7 +79,7 @@ class Jsv4
 		if (is_object($data) || is_array($data)) {
 			$data = unserialize(serialize($data));
 		}
-		$result = new Jsv4($data, $schema, FALSE, TRUE);
+		$result = new Validator($data, $schema, FALSE, TRUE);
 		if ($result->valid) {
 			$result->value = $result->data;
 		}
@@ -145,7 +146,7 @@ class Jsv4
 	private function fail($code, $dataPath, $schemaPath, $errorMessage, $subErrors = NULL)
 	{
 		$this->valid	 = FALSE;
-		$error			 = new Jsv4Error($code, $dataPath, $schemaPath, $errorMessage, $subErrors);
+		$error			 = new ValidationException($code, $dataPath, $schemaPath, $errorMessage, $subErrors);
 		$this->errors[]	 = $error;
 		if ($this->firstErrorOnly) {
 			throw $error;
@@ -155,7 +156,7 @@ class Jsv4
 
 	private function subResult(&$data, $schema, $allowCoercion = TRUE)
 	{
-		return new Jsv4($data, $schema, $this->firstErrorOnly, $allowCoercion && $this->coerce);
+		return new Validator($data, $schema, $this->firstErrorOnly, $allowCoercion && $this->coerce);
 	}
 
 
@@ -175,7 +176,7 @@ class Jsv4
 		if (isset($this->schema->type)) {
 			$types = $this->schema->type;
 			if (!is_array($types)) {
-				$types = array($types);
+				$types = [$types];
 			}
 			foreach ($types as $type) {
 				if ($type == "object" && is_object($this->data)) {
