@@ -1,10 +1,12 @@
 <?php
 
-$store = new SchemaStore();
+use Jsv4\SchemaStore;
+
+$store = new SchemaStore;
 
 $urlBase = "http://example.com/";
-$url = $urlBase."test-schema";
-$schema = json_decode('{
+$url	 = $urlBase . "test-schema";
+$schema	 = json_decode('{
 	"title": "Test schema",
 	"properties": {
 		"foo": {
@@ -26,7 +28,7 @@ $schema = json_decode('{
 			}
 		},
 		"testSchemaFoo": {
-		    "id": "/test-schema-foo"
+			"id": "/test-schema-foo"
 		},
 		"somewhereElse": {
 			"id": "http://somewhere-else.com/test-schema"
@@ -36,27 +38,27 @@ $schema = json_decode('{
 
 $store->add($url, $schema);
 
-if (!recursiveEqual($store->get($url."#foo"), $schema->properties->foo)) {
+if (!recursiveEqual($store->get($url . "#foo"), $schema->properties->foo)) {
 	throw new Exception("#foo not found");
 }
 
-if (!recursiveEqual($store->get($url."?baz=1"), $schema->properties->baz)) {
+if (!recursiveEqual($store->get($url . "?baz=1"), $schema->properties->baz)) {
 	throw new Exception("?baz=1 not found");
 }
 
-if (!recursiveEqual($store->get($url."/foobar"), $schema->properties->foobar)) {
+if (!recursiveEqual($store->get($url . "/foobar"), $schema->properties->foobar)) {
 	throw new Exception("/foobar not found");
 }
 
-if (!recursiveEqual($store->get($url."/foo#bar"), $schema->properties->nestedSchema->nested)) {
+if (!recursiveEqual($store->get($url . "/foo#bar"), $schema->properties->nestedSchema->nested)) {
 	throw new Exception("/foo#bar not found");
 }
 
-if ($store->get($urlBase."bar")) {
+if ($store->get($urlBase . "bar")) {
 	throw new Exception("/bar should not be indexed, as it should not be trusted");
 }
 
-if ($store->get($url."-foo")) {
+if ($store->get($url . "-foo")) {
 	throw new Exception("/test-schema-foo should not be indexed, as it should not be trusted");
 }
 
@@ -66,8 +68,6 @@ if ($store->get("http://somewhere-else.com/test-schema")) {
 
 $store->add($url, $schema, TRUE);
 
-if (!recursiveEqual($store->get($urlBase."bar"), $schema->properties->bar)) {
+if (!recursiveEqual($store->get($urlBase . "bar"), $schema->properties->bar)) {
 	throw new Exception("/bar not found");
 }
-
-?>

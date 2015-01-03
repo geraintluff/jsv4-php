@@ -1,7 +1,13 @@
 <?php
 
-class SchemaStore {
-	private static function pointerGet(&$value, $path="", $strict=FALSE) {
+namespace Jsv4;
+
+
+class SchemaStore
+{
+
+	private static function pointerGet(&$value, $path = "", $strict = FALSE)
+	{
 		if ($path == "") {
 			return $value;
 		} else if ($path[0] != "/") {
@@ -10,13 +16,13 @@ class SchemaStore {
 		$parts = explode("/", $path);
 		array_shift($parts);
 		foreach ($parts as $part) {
-			$part = str_replace("~1", "/", $part);
-			$part = str_replace("~0", "~", $part);
+			$part	 = str_replace("~1", "/", $part);
+			$part	 = str_replace("~0", "~", $part);
 			if (is_array($value) && is_numeric($part)) {
-				$value =& $value[$part];
+				$value = & $value[$part];
 			} else if (is_object($value)) {
 				if (isset($value->$part)) {
-					$value =& $value->$part;
+					$value = & $value->$part;
 				} else if ($strict) {
 					throw new Exception("Path does not exist: $path");
 				} else {
@@ -30,8 +36,10 @@ class SchemaStore {
 		}
 		return $value;
 	}
-	
-	private static function isNumericArray($array) {
+
+
+	private static function isNumericArray($array)
+	{
 		$count = count($array);
 		for ($i = 0; $i < $count; $i++) {
 			if (!isset($array[$i])) {
@@ -40,8 +48,10 @@ class SchemaStore {
 		}
 		return TRUE;
 	}
-	
-	private static function resolveUrl($base, $relative) {
+
+
+	private static function resolveUrl($base, $relative)
+	{
 		if (parse_url($relative, PHP_URL_SCHEME) != '') {
 			// It's already absolute
 			return $relative;
@@ -54,14 +64,14 @@ class SchemaStore {
 			$baseParts['fragment'] = substr($relative, 1);
 		} else if ($relative[0] == "/") {
 			if ($relative[1] == "/") {
-				return $baseParts['scheme'].$relative;
+				return $baseParts['scheme'] . $relative;
 			}
 			$baseParts['path'] = $relative;
 			unset($baseParts['query']);
 			unset($baseParts['fragment']);
 		} else {
-			$basePathParts = explode("/", $baseParts['path']);
-			$relativePathParts = explode("/", $relative);
+			$basePathParts		 = explode("/", $baseParts['path']);
+			$relativePathParts	 = explode("/", $relative);
 			array_pop($basePathParts);
 			while (count($relativePathParts)) {
 				if ($relativePathParts[0] == "..") {
@@ -77,51 +87,55 @@ class SchemaStore {
 			}
 			$baseParts['path'] = implode("/", $basePathParts);
 			if ($baseParts['path'][0] != '/') {
-				$baseParts['path'] = "/".$baseParts['path'];
+				$baseParts['path'] = "/" . $baseParts['path'];
 			}
 		}
-		
+
 		$result = "";
 		if (isset($baseParts['scheme'])) {
-			$result .= $baseParts['scheme']."://";
+			$result .= $baseParts['scheme'] . "://";
 			if (isset($baseParts['user'])) {
-				$result .= ":".$baseParts['user'];
+				$result .= ":" . $baseParts['user'];
 				if (isset($baseParts['pass'])) {
-					$result .= ":".$baseParts['pass'];
+					$result .= ":" . $baseParts['pass'];
 				}
 				$result .= "@";
 			}
 			$result .= $baseParts['host'];
 			if (isset($baseParts['port'])) {
-				$result .= ":".$baseParts['port'];
+				$result .= ":" . $baseParts['port'];
 			}
 		}
 		$result .= $baseParts["path"];
 		if (isset($baseParts['query'])) {
-			$result .= "?".$baseParts['query'];
+			$result .= "?" . $baseParts['query'];
 		}
 		if (isset($baseParts['fragment'])) {
-			$result .= "#".$baseParts['fragment'];
+			$result .= "#" . $baseParts['fragment'];
 		}
 		return $result;
 	}
 
+
 	private $schemas = array();
-	private $refs = array();
-	
-	public function missing() {
+	private $refs	 = array();
+
+	public function missing()
+	{
 		return array_keys($this->refs);
 	}
-	
-	public function add($url, $schema, $trusted=FALSE) {
-		$urlParts = explode("#", $url);
-		$baseUrl = array_shift($urlParts);
-		$fragment = urldecode(implode("#", $urlParts));
 
-		$trustBase = explode("?", $baseUrl);
-		$trustBase = $trustBase[0];
 
-		$this->schemas[$url] =& $schema;
+	public function add($url, $schema, $trusted = FALSE)
+	{
+		$urlParts	 = explode("#", $url);
+		$baseUrl	 = array_shift($urlParts);
+		$fragment	 = urldecode(implode("#", $urlParts));
+
+		$trustBase	 = explode("?", $baseUrl);
+		$trustBase	 = $trustBase[0];
+
+		$this->schemas[$url] = & $schema;
 		$this->normalizeSchema($url, $schema, $trusted ? TRUE : $trustBase);
 		if ($fragment == "") {
 			$this->schemas[$baseUrl] = $schema;
@@ -133,31 +147,33 @@ class SchemaStore {
 				}
 				unset($this->refs[$baseUrl][$fullUrl]);
 			}
-			if (count($this->refs[$baseUrl]) == 0) {
+			if (isset($this->refs[$baseUrl]) && count($this->refs[$baseUrl]) === 0) {
 				unset($this->refs[$baseUrl]);
 			}
 		}
 	}
-	
-	private function normalizeSchema($url, &$schema, $trustPrefix = '') {
+
+
+	private function normalizeSchema($url, &$schema, $trustPrefix = '')
+	{
 		if (is_array($schema) && !self::isNumericArray($schema)) {
-			$schema = (object)$schema;
+			$schema = (object) $schema;
 		}
 		if (is_object($schema)) {
 			if (isset($schema->{'$ref'})) {
-				$refUrl = $schema->{'$ref'} = self::resolveUrl($url, $schema->{'$ref'});
-				if ($refSchema = $this->get($refUrl)) {
+				$refUrl				 = $schema->{'$ref'}	 = self::resolveUrl($url, $schema->{'$ref'});
+				if ($refSchema			 = $this->get($refUrl)) {
 					$schema = $refSchema;
 					return;
 				} else {
-					$urlParts = explode("#", $refUrl);
-					$baseUrl = array_shift($urlParts);
-					$fragment = urldecode(implode("#", $urlParts));
-					$this->refs[$baseUrl][$refUrl][] =& $schema;
+					$urlParts						 = explode("#", $refUrl);
+					$baseUrl						 = array_shift($urlParts);
+					$fragment						 = urldecode(implode("#", $urlParts));
+					$this->refs[$baseUrl][$refUrl][] = & $schema;
 				}
 			} else if (isset($schema->id) && is_string($schema->id)) {
-				$schema->id = $url = self::resolveUrl($url, $schema->id);
-				$regex = '/^'.preg_quote($trustPrefix, '/').'(?:[#\/?].*)?$/';
+				$schema->id	 = $url		 = self::resolveUrl($url, $schema->id);
+				$regex		 = '/^' . preg_quote($trustPrefix, '/') . '(?:[#\/?].*)?$/';
 				if (($trustPrefix === TRUE || preg_match($regex, $schema->id)) && !isset($this->schemas[$schema->id])) {
 					$this->add($schema->id, $schema);
 				}
@@ -173,14 +189,16 @@ class SchemaStore {
 			}
 		}
 	}
-	
-	public function get($url) {
+
+
+	public function get($url)
+	{
 		if (isset($this->schemas[$url])) {
 			return $this->schemas[$url];
 		}
-		$urlParts = explode("#", $url);
-		$baseUrl = array_shift($urlParts);
-		$fragment = urldecode(implode("#", $urlParts));
+		$urlParts	 = explode("#", $url);
+		$baseUrl	 = array_shift($urlParts);
+		$fragment	 = urldecode(implode("#", $urlParts));
 		if (isset($this->schemas[$baseUrl])) {
 			$schema = $this->schemas[$baseUrl];
 			if ($schema && $fragment == "" || $fragment[0] == "/") {
@@ -190,6 +208,8 @@ class SchemaStore {
 			}
 		}
 	}
+
+
 }
 
 ?>

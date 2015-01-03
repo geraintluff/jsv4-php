@@ -1,6 +1,7 @@
 <?php
 
-function recursiveEqual($a, $b) {
+function recursiveEqual($a, $b)
+{
 	if (is_object($a)) {
 		if (!is_object($b)) {
 			return FALSE;
@@ -42,7 +43,9 @@ function recursiveEqual($a, $b) {
 	return $a === $b;
 }
 
-function pointerGet(&$value, $path="", $strict=FALSE) {
+
+function pointerGet(&$value, $path = "", $strict = FALSE)
+{
 	if ($path == "") {
 		return $value;
 	} else if ($path[0] != "/") {
@@ -51,13 +54,13 @@ function pointerGet(&$value, $path="", $strict=FALSE) {
 	$parts = explode("/", $path);
 	array_shift($parts);
 	foreach ($parts as $part) {
-		$part = str_replace("~1", "/", $part);
-		$part = str_replace("~0", "~", $part);
+		$part	 = str_replace("~1", "/", $part);
+		$part	 = str_replace("~0", "~", $part);
 		if (is_array($value) && is_numeric($part)) {
-			$value =& $value[$part];
+			$value = & $value[$part];
 		} else if (is_object($value)) {
 			if (isset($value->$part)) {
-				$value =& $value->$part;
+				$value = & $value->$part;
 			} else if ($strict) {
 				throw new Exception("Path does not exist: $path");
 			} else {
@@ -72,14 +75,15 @@ function pointerGet(&$value, $path="", $strict=FALSE) {
 	return $value;
 }
 
-function pointerJoin($parts) {
+
+function pointerJoin($parts)
+{
 	$result = "";
 	foreach ($parts as $part) {
-		$part = str_replace("~", "~0", $part);
-		$part = str_replace("/", "~1", $part);
-		$result .= "/".$part;
+		$part	 = str_replace("~", "~0", $part);
+		$part	 = str_replace("/", "~1", $part);
+		$result .= "/" . $part;
 	}
 	return $result;
 }
 
-?>

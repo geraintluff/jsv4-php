@@ -1,17 +1,20 @@
 <?php
 
-header('Content-Type: text/plain');
+use Jsv4\Validator;
 
-require_once 'src/Validator.php';
-require_once 'src/ValidationException.php';
-require_once 'src/SchemaStore.php';
+require './vendor/autoload.php';
+
+//require_once 'src/Jsv4/Validator.php';
+//require_once 'src//Jsv4/ValidationException.php';
+//require_once 'src//Jsv4/SchemaStore.php';
 require_once 'test-utils.php';
 
 
-$totalTestCount = 0;
-$failedTests = array();
+$totalTestCount	 = 0;
+$failedTests	 = array();
 
-function runJsonTest($key, $test) {
+function runJsonTest($key, $test)
+{
 	global $totalTestCount;
 	global $failedTests;
 	$totalTestCount++;
@@ -31,46 +34,50 @@ function runJsonTest($key, $test) {
 			foreach ($test->result as $path => $expectedValue) {
 				$actualValue = pointerGet($result, $path, TRUE);
 				if (!recursiveEqual($actualValue, $expectedValue)) {
-					$failedTests[$key][] = "$path does not match - should be:\n    ".json_encode($expectedValue)."\nwas:\n    ".json_encode($actualValue);
+					$failedTests[$key][] = "$path does not match - should be:\n    " . json_encode($expectedValue) . "\nwas:\n    " . json_encode($actualValue);
 				}
 			}
 		} else {
 			if (!recursiveEqual($test->result, $result)) {
-				$failedTests[$key][] = "$path does not match - should be:\n    ".json_encode($test->result)."\nwas:\n    ".json_encode($result);
+				$failedTests[$key][] = "$path does not match - should be:\n    " . json_encode($test->result) . "\nwas:\n    " . json_encode($result);
 			}
 		}
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		$failedTests[$key][] = $e->getMessage();
-		$failedTests[$key][] .= "    ".str_replace("\n", "\n    ", $e->getTraceAsString());
+		$failedTests[$key][] .= "    " . str_replace("\n", "\n    ", $e->getTraceAsString());
 	}
 }
 
-function runPhpTest($key, $filename) {
+
+function runPhpTest($key, $filename)
+{
 	global $totalTestCount;
 	global $failedTests;
 	$totalTestCount++;
 
 	try {
 		include_once $filename;
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 		$failedTests[$key][] = $e->getMessage();
-		$failedTests[$key][] .= "    ".str_replace("\n", "\n    ", $e->getTraceAsString());
+		$failedTests[$key][] .= "    " . str_replace("\n", "\n    ", $e->getTraceAsString());
 	}
 }
 
-function runTests($directory, $indent="") {
+
+function runTests($directory, $indent = "")
+{
 	global $failedTests;
 	if ($directory[strlen($directory) - 1] != "/") {
 		$directory .= "/";
 	}
 	$baseName = basename($directory);
 
-	$testCount = 0;
-	$testFileCount = 0;
+	$testCount		 = 0;
+	$testFileCount	 = 0;
 
 	$entries = scandir($directory);
 	foreach ($entries as $entry) {
-		$filename = $directory.$entry;
+		$filename = $directory . $entry;
 		if (stripos($entry, '.php') && is_file($filename)) {
 			$key = substr($filename, 0, strlen($filename) - 4);
 			runPhpTest($key, $filename);
@@ -103,12 +110,13 @@ function runTests($directory, $indent="") {
 		echo "{$indent}{$baseName}/\n";
 	}
 	foreach ($entries as $entry) {
-		$filename = $directory.$entry;
+		$filename = $directory . $entry;
 		if (strpos($entry, '.') === FALSE && is_dir($filename)) {
-			runTests($filename, $indent.str_repeat(" ", strlen($baseName) + 1));
+			runTests($filename, $indent . str_repeat(" ", strlen($baseName) + 1));
 		}
 	}
 }
+
 
 runTests("tests/");
 
@@ -116,16 +124,14 @@ echo "\n\n";
 if (count($failedTests) == 0) {
 	echo "Passed all {$totalTestCount} tests\n";
 } else {
-	echo "Failed ".count($failedTests)."/{$totalTestCount} tests\n";
+	echo "Failed " . count($failedTests) . "/{$totalTestCount} tests\n";
 	foreach ($failedTests as $key => $failedTest) {
 		if (is_array($failedTest)) {
 			$failedTest = implode("\n", $failedTest);
 		}
 		echo "\n";
 		echo "FAILED $key:\n";
-		echo str_repeat("-", strlen($key) + 10)."\n";
-		echo " |  ".str_replace("\n", "\n |  ", $failedTest)."\n";
+		echo str_repeat("-", strlen($key) + 10) . "\n";
+		echo " |  " . str_replace("\n", "\n |  ", $failedTest) . "\n";
 	}
 }
-
-?>

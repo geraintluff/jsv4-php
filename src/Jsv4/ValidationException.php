@@ -1,9 +1,9 @@
 <?php
 
-/**
- * @author Martin Bažík <martin@bazo.sk>
- */
-class ValidationException extends RuntimeException
+namespace Jsv4;
+
+
+class ValidationException extends \RuntimeException
 {
 
 	public $code;

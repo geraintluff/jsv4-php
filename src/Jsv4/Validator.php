@@ -1,5 +1,8 @@
 <?php
 
+namespace Jsv4;
+
+
 class Validator
 {
 
@@ -550,7 +553,7 @@ class Validator
 				} elseif (in_array("string", $types)) {
 					$this->data->$key = "";
 				} elseif (in_array("object", $types)) {
-					$this->data->$key = new StdClass;
+					$this->data->$key = new \StdClass;
 				} elseif (in_array("array", $types)) {
 					$this->data->$key = [];
 				} else {
