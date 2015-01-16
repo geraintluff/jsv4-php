@@ -13,9 +13,8 @@
 
     },
     "autoload": {
-        "classmap": [
-            "jsv4.php",
-            "schema-store.php"
-        ]
+        "psr-4": {
+            "Jsv4\\": "src/Jsv4"
+        }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-$store = new SchemaStore();
+$store = new Jsv4\SchemaStore();
 
 $url = "http://example.com/test-schema";
 $schema = json_decode('{
@@ -10,10 +10,8 @@ $schema = json_decode('{
 $store->add($url, $schema);
 
 if (!recursiveEqual($store->get($url), $schema)) {
-	throw new Exception("Not equal");
+    throw new Exception("Not equal");
 }
-if (!recursiveEqual($store->get($url."#/title"), $schema->title)) {
-	throw new Exception("Not equal");
+if (!recursiveEqual($store->get($url . "#/title"), $schema->title)) {
+    throw new Exception("Not equal");
 }
-
-?>
