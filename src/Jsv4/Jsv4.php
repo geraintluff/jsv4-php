@@ -2,40 +2,41 @@
 
 namespace Jsv4;
 
-define('JSV4_INVALID_TYPE', 0);
-define('JSV4_ENUM_MISMATCH', 1);
-define('JSV4_ANY_OF_MISSING', 10);
-define('JSV4_ONE_OF_MISSING', 11);
-define('JSV4_ONE_OF_MULTIPLE', 12);
-define('JSV4_NOT_PASSED', 13);
-// Numeric errors
-define('JSV4_NUMBER_MULTIPLE_OF', 100);
-define('JSV4_NUMBER_MINIMUM', 101);
-define('JSV4_NUMBER_MINIMUM_EXCLUSIVE', 102);
-define('JSV4_NUMBER_MAXIMUM', 103);
-define('JSV4_NUMBER_MAXIMUM_EXCLUSIVE', 104);
-// String errors
-define('JSV4_STRING_LENGTH_SHORT', 200);
-define('JSV4_STRING_LENGTH_LONG', 201);
-define('JSV4_STRING_PATTERN', 202);
-// Object errors
-define('JSV4_OBJECT_PROPERTIES_MINIMUM', 300);
-define('JSV4_OBJECT_PROPERTIES_MAXIMUM', 301);
-define('JSV4_OBJECT_REQUIRED', 302);
-define('JSV4_OBJECT_ADDITIONAL_PROPERTIES', 303);
-define('JSV4_OBJECT_DEPENDENCY_KEY', 304);
-// Array errors
-define('JSV4_ARRAY_LENGTH_SHORT', 400);
-define('JSV4_ARRAY_LENGTH_LONG', 401);
-define('JSV4_ARRAY_UNIQUE', 402);
-define('JSV4_ARRAY_ADDITIONAL_ITEMS', 403);
-
 class Jsv4
 {
+    const JSV4_INVALID_TYPE = 0;
+    const JSV4_ENUM_MISMATCH = 1;
+    const JSV4_ANY_OF_MISSING = 10;
+    const JSV4_ONE_OF_MISSING = 11;
+    const JSV4_ONE_OF_MULTIPLE = 12;
+    const JSV4_NOT_PASSED = 13;
+    // Numeric errors
+    const JSV4_NUMBER_MULTIPLE_OF = 100;
+    const JSV4_NUMBER_MINIMUM = 101;
+    const JSV4_NUMBER_MINIMUM_EXCLUSIVE = 102;
+    const JSV4_NUMBER_MAXIMUM = 103;
+    const JSV4_NUMBER_MAXIMUM_EXCLUSIVE = 104;
+    // String errors
+    const JSV4_STRING_LENGTH_SHORT = 200;
+    const JSV4_STRING_LENGTH_LONG = 201;
+    const JSV4_STRING_PATTERN = 202;
+    // Object errors
+    const JSV4_OBJECT_PROPERTIES_MINIMUM = 300;
+    const JSV4_OBJECT_PROPERTIES_MAXIMUM = 301;
+    const JSV4_OBJECT_REQUIRED = 302;
+    const JSV4_OBJECT_ADDITIONAL_PROPERTIES = 303;
+    const JSV4_OBJECT_DEPENDENCY_KEY = 304;
+    // Array errors
+    const JSV4_ARRAY_LENGTH_SHORT = 400;
+    const JSV4_ARRAY_LENGTH_LONG = 401;
+    const JSV4_ARRAY_UNIQUE = 402;
+    const JSV4_ARRAY_ADDITIONAL_ITEMS = 403;
+    
     private $data;
     private $schema;
     private $firstErrorOnly;
     private $coerce;
+    
     public $valid;
     public $errors;
     
@@ -237,7 +238,7 @@ class Jsv4
             } elseif ($type == "null") {
                 $type = "null";
             }
-            $this->fail(JSV4_INVALID_TYPE, "", "/type", "Invalid type: $type");
+            $this->fail(self::JSV4_INVALID_TYPE, "", "/type", "Invalid type: $type");
         }
     }
 
@@ -249,7 +250,7 @@ class Jsv4
                     return;
                 }
             }
-            $this->fail(JSV4_ENUM_MISMATCH, "", "/enum", "Value must be one of the enum options");
+            $this->fail(self::JSV4_ENUM_MISMATCH, "", "/enum", "Value must be one of the enum options");
         }
     }
 
@@ -264,7 +265,7 @@ class Jsv4
                     if ($this->coerce && $this->createValueForProperty($key)) {
                         continue;
                     }
-                    $this->fail(JSV4_OBJECT_REQUIRED, "", "/required/{$index}", "Missing required property: {$key}");
+                    $this->fail(self::JSV4_OBJECT_REQUIRED, "", "/required/{$index}", "Missing required property: {$key}");
                 }
             }
         }
@@ -304,7 +305,7 @@ class Jsv4
                     continue;
                 }
                 if (!$additionalProperties) {
-                    $this->fail(JSV4_OBJECT_ADDITIONAL_PROPERTIES, self::pointerJoin(array($key)), "/additionalProperties", "Additional properties not allowed");
+                    $this->fail(self::JSV4_OBJECT_ADDITIONAL_PROPERTIES, self::pointerJoin(array($key)), "/additionalProperties", "Additional properties not allowed");
                 } elseif (is_object($additionalProperties)) {
                     $subResult = $this->subResult($subValue, $additionalProperties);
                     $this->includeSubResult($subResult, self::pointerJoin(array($key)), "/additionalProperties");
@@ -322,24 +323,24 @@ class Jsv4
                 } elseif (is_array($dep)) {
                     foreach ($dep as $index => $depKey) {
                         if (!isset($this->data->$depKey)) {
-                            $this->fail(JSV4_OBJECT_DEPENDENCY_KEY, "", self::pointerJoin(array("dependencies", $key, $index)), "Property $key depends on $depKey");
+                            $this->fail(self::JSV4_OBJECT_DEPENDENCY_KEY, "", self::pointerJoin(array("dependencies", $key, $index)), "Property $key depends on $depKey");
                         }
                     }
                 } else {
                     if (!isset($this->data->$dep)) {
-                        $this->fail(JSV4_OBJECT_DEPENDENCY_KEY, "", self::pointerJoin(array("dependencies", $key)), "Property $key depends on $dep");
+                        $this->fail(self::JSV4_OBJECT_DEPENDENCY_KEY, "", self::pointerJoin(array("dependencies", $key)), "Property $key depends on $dep");
                     }
                 }
             }
         }
         if (isset($this->schema->minProperties)) {
             if (count(get_object_vars($this->data)) < $this->schema->minProperties) {
-                $this->fail(JSV4_OBJECT_PROPERTIES_MINIMUM, "", "/minProperties", ($this->schema->minProperties == 1) ? "Object cannot be empty" : "Object must have at least {$this->schema->minProperties} defined properties");
+                $this->fail(self::JSV4_OBJECT_PROPERTIES_MINIMUM, "", "/minProperties", ($this->schema->minProperties == 1) ? "Object cannot be empty" : "Object must have at least {$this->schema->minProperties} defined properties");
             }
         }
         if (isset($this->schema->maxProperties)) {
             if (count(get_object_vars($this->data)) > $this->schema->maxProperties) {
-                $this->fail(JSV4_OBJECT_PROPERTIES_MAXIMUM, "", "/minProperties", ($this->schema->maxProperties == 1) ? "Object must have at most one defined property" : "Object must have at most {$this->schema->maxProperties} defined properties");
+                $this->fail(self::JSV4_OBJECT_PROPERTIES_MAXIMUM, "", "/minProperties", ($this->schema->maxProperties == 1) ? "Object must have at most one defined property" : "Object must have at most {$this->schema->maxProperties} defined properties");
             }
         }
     }
@@ -362,7 +363,7 @@ class Jsv4
                     } elseif (isset($this->schema->additionalItems)) {
                         $additionalItems = $this->schema->additionalItems;
                         if (!$additionalItems) {
-                            $this->fail(JSV4_ARRAY_ADDITIONAL_ITEMS, "/{$index}", "/additionalItems", "Additional items (index " . count($items) . " or more) are not allowed");
+                            $this->fail(self::JSV4_ARRAY_ADDITIONAL_ITEMS, "/{$index}", "/additionalItems", "Additional items (index " . count($items) . " or more) are not allowed");
                         } elseif ($additionalItems !== true) {
                             $subResult = $this->subResult($subData, $additionalItems);
                             $this->includeSubResult($subResult, "/{$index}", "/additionalItems");
@@ -381,12 +382,12 @@ class Jsv4
         }
         if (isset($this->schema->minItems)) {
             if (count($this->data) < $this->schema->minItems) {
-                $this->fail(JSV4_ARRAY_LENGTH_SHORT, "", "/minItems", "Array is too short (must have at least {$this->schema->minItems} items)");
+                $this->fail(self::JSV4_ARRAY_LENGTH_SHORT, "", "/minItems", "Array is too short (must have at least {$this->schema->minItems} items)");
             }
         }
         if (isset($this->schema->maxItems)) {
             if (count($this->data) > $this->schema->maxItems) {
-                $this->fail(JSV4_ARRAY_LENGTH_LONG, "", "/maxItems", "Array is too long (must have at most {$this->schema->maxItems} items)");
+                $this->fail(self::JSV4_ARRAY_LENGTH_LONG, "", "/maxItems", "Array is too long (must have at most {$this->schema->maxItems} items)");
             }
         }
         if (isset($this->schema->uniqueItems)) {
@@ -394,7 +395,7 @@ class Jsv4
                 foreach ($this->data as $indexB => $itemB) {
                     if ($indexA < $indexB) {
                         if (self::recursiveEqual($itemA, $itemB)) {
-                            $this->fail(JSV4_ARRAY_UNIQUE, "", "/uniqueItems", "Array items must be unique (items $indexA and $indexB)");
+                            $this->fail(self::JSV4_ARRAY_UNIQUE, "", "/uniqueItems", "Array items must be unique (items $indexA and $indexB)");
                             break 2;
                         }
                     }
@@ -410,12 +411,12 @@ class Jsv4
         }
         if (isset($this->schema->minLength)) {
             if (strlen($this->data) < $this->schema->minLength) {
-                $this->fail(JSV4_STRING_LENGTH_SHORT, "", "/minLength", "String must be at least {$this->schema->minLength} characters long");
+                $this->fail(self::JSV4_STRING_LENGTH_SHORT, "", "/minLength", "String must be at least {$this->schema->minLength} characters long");
             }
         }
         if (isset($this->schema->maxLength)) {
             if (strlen($this->data) > $this->schema->maxLength) {
-                $this->fail(JSV4_STRING_LENGTH_LONG, "", "/maxLength", "String must be at most {$this->schema->maxLength} characters long");
+                $this->fail(self::JSV4_STRING_LENGTH_LONG, "", "/maxLength", "String must be at most {$this->schema->maxLength} characters long");
             }
         }
         if (isset($this->schema->pattern)) {
@@ -423,7 +424,7 @@ class Jsv4
             $patternFlags = isset($this->schema->patternFlags) ? $this->schema->patternFlags : '';
             $result = preg_match("/" . str_replace("/", "\\/", $pattern) . "/" . $patternFlags, $this->data);
             if ($result === 0) {
-                $this->fail(JSV4_STRING_PATTERN, "", "/pattern", "String does not match pattern: $pattern");
+                $this->fail(self::JSV4_STRING_PATTERN, "", "/pattern", "String does not match pattern: $pattern");
             }
         }
     }
@@ -435,18 +436,18 @@ class Jsv4
         }
         if (isset($this->schema->multipleOf)) {
             if (fmod($this->data / $this->schema->multipleOf, 1) != 0) {
-                $this->fail(JSV4_NUMBER_MULTIPLE_OF, "", "/multipleOf", "Number must be a multiple of {$this->schema->multipleOf}");
+                $this->fail(self::JSV4_NUMBER_MULTIPLE_OF, "", "/multipleOf", "Number must be a multiple of {$this->schema->multipleOf}");
             }
         }
         if (isset($this->schema->minimum)) {
             $minimum = $this->schema->minimum;
             if (isset($this->schema->exclusiveMinimum) && $this->schema->exclusiveMinimum) {
                 if ($this->data <= $minimum) {
-                    $this->fail(JSV4_NUMBER_MINIMUM_EXCLUSIVE, "", "", "Number must be > $minimum");
+                    $this->fail(self::JSV4_NUMBER_MINIMUM_EXCLUSIVE, "", "", "Number must be > $minimum");
                 }
             } else {
                 if ($this->data < $minimum) {
-                    $this->fail(JSV4_NUMBER_MINIMUM, "", "/minimum", "Number must be >= $minimum");
+                    $this->fail(self::JSV4_NUMBER_MINIMUM, "", "/minimum", "Number must be >= $minimum");
                 }
             }
         }
@@ -454,11 +455,11 @@ class Jsv4
             $maximum = $this->schema->maximum;
             if (isset($this->schema->exclusiveMaximum) && $this->schema->exclusiveMaximum) {
                 if ($this->data >= $maximum) {
-                    $this->fail(JSV4_NUMBER_MAXIMUM_EXCLUSIVE, "", "", "Number must be < $maximum");
+                    $this->fail(self::JSV4_NUMBER_MAXIMUM_EXCLUSIVE, "", "", "Number must be < $maximum");
                 }
             } else {
                 if ($this->data > $maximum) {
-                    $this->fail(JSV4_NUMBER_MAXIMUM, "", "/maximum", "Number must be <= $maximum");
+                    $this->fail(self::JSV4_NUMBER_MAXIMUM, "", "/maximum", "Number must be <= $maximum");
                 }
             }
         }
@@ -481,7 +482,7 @@ class Jsv4
                 }
                 $failResults[] = $subResult;
             }
-            $this->fail(JSV4_ANY_OF_MISSING, "", "/anyOf", "Value must satisfy at least one of the options", $failResults);
+            $this->fail(self::JSV4_ANY_OF_MISSING, "", "/anyOf", "Value must satisfy at least one of the options", $failResults);
         }
         if (isset($this->schema->oneOf)) {
             $failResults = array();
@@ -492,20 +493,20 @@ class Jsv4
                     if ($successIndex === null) {
                         $successIndex = $index;
                     } else {
-                        $this->fail(JSV4_ONE_OF_MULTIPLE, "", "/oneOf", "Value satisfies more than one of the options ($successIndex and $index)");
+                        $this->fail(self::JSV4_ONE_OF_MULTIPLE, "", "/oneOf", "Value satisfies more than one of the options ($successIndex and $index)");
                     }
                     continue;
                 }
                 $failResults[] = $subResult;
             }
             if ($successIndex === null) {
-                $this->fail(JSV4_ONE_OF_MISSING, "", "/oneOf", "Value must satisfy one of the options", $failResults);
+                $this->fail(self::JSV4_ONE_OF_MISSING, "", "/oneOf", "Value must satisfy one of the options", $failResults);
             }
         }
         if (isset($this->schema->not)) {
             $subResult = $this->subResult($this->data, $this->schema->not, false);
             if ($subResult->valid) {
-                $this->fail(JSV4_NOT_PASSED, "", "/not", "Value satisfies prohibited schema");
+                $this->fail(self::JSV4_NOT_PASSED, "", "/not", "Value satisfies prohibited schema");
             }
         }
     }
