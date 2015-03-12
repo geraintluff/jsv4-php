@@ -274,6 +274,11 @@ class Jsv4 {
 					}
 				}
 			}
+			foreach ($this->data as $key => &$subValue) {
+				if (isset($checkedProperties[$key]) == false){
+					$this->fail(JSV4_INVALID_TYPE, "/$key", "/$key", "Object has invalid key: {$key}");
+				}
+			}
 		}
 		if (isset($this->schema->additionalProperties)) {
 			$additionalProperties = $this->schema->additionalProperties;
