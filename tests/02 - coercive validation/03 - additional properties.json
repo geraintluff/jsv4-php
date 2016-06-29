@@ -1,0 +1,29 @@
+[
+	{
+		"method": "coerce",
+		"title": "discard additional properties from default",
+		"schema": {
+			"properties": {
+				"foo": {
+                    "type": "boolean"
+                },
+				"bar": {
+                    "type": "string",
+					"default": "default value"
+				}
+			},
+            "required": [ "foo" ],
+			"additionalProperties": false
+		},
+		"data": {
+			"foo": true,
+            "garbage": "i am not wanted"
+		},
+		"result": {
+			"/valid": true,
+			"/value": {
+				"foo": true
+			}
+		}
+	}
+]

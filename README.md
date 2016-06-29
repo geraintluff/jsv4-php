@@ -49,17 +49,23 @@ If it is successful, then a modified version of the data can be found in `$resul
 
 It's not psychic - in fact, it's quite limited.  What it currently does is:
 
-### Type-coercion for scalar types
+#### Type-coercion for scalar types
 
 Perhaps you are using data from `$_GET`, so everything's a string, but the schema says certain values should be integers or booleans.
 
 `Jsv4::coerce()` will attempt to convert strings to numbers/booleans *only where the schema says*, leaving other numerically-value strings as strings.
 
-### Missing properties
+#### Missing properties
 
 Perhaps the API needs a complete object (described using `"required"` in the schema), but only a partial one was supplied.
 
 `Jsv4::coerce()` will attempt to insert appropriate values for the missing properties, using a default (if it is defined in a nearby `"properties"` entry) or by creating a value if it knows the type.
+
+#### Additional properties
+
+Perhaps the client sends additional garbage to the API, and you want to filter them out right away:
+
+If `additionalProperties` is set to `false`, `Jsv4::coerce()` will remove any unknown properties at objects.
 
 ## The `SchemaStore` class
 

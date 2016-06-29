@@ -309,7 +309,9 @@ class Validator
 				if (isset($checkedProperties[$key])) {
 					continue;
 				}
-				if (!$additionalProperties) {
+				if (!$additionalProperties and $this->coerce) {
+					unset($this->data->$key);
+				} else if(!$additionalProperties) {
 					$this->fail(self::OBJECT_ADDITIONAL_PROPERTIES, self::pointerJoin(array($key)), "/additionalProperties", "Additional properties not allowed");
 				} else if (is_object($additionalProperties)) {
 					$subResult = $this->subResult($subValue, $additionalProperties);
