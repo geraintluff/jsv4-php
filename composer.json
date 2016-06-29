@@ -1,5 +1,5 @@
 {
-	"name": "geraintluff/jsv4",
+	"name": "pogner-it/jsv4",
 	"description": "A (coercive) JSON Schema v4 Validator for PHP",
 	"keywords": ["JSON Schema", "JSON", "schema", "validator", "v4", "Geraint Luff", "geraintluff"],
 	"license": "MIT",
