@@ -239,6 +239,14 @@ class Validator
 							$this->data = FALSE;
 							return;
 						}
+					} else if ($type == "object") {
+						if (is_array($this->data)) {
+							$this->data = (object) $this->data;
+							return;
+						}
+					} else if ($type == "array") {
+						$this->data = (array) $this->data;
+						return;
 					}
 				}
 			}
@@ -274,7 +282,7 @@ class Validator
 		}
 		if (isset($this->schema->required)) {
 			foreach ($this->schema->required as $index => $key) {
-				if (!array_key_exists($key, (array) $this->data)) {
+				if (!property_exists($this->data, $key)) {
 					if ($this->coerce && $this->createValueForProperty($key)) {
 						continue;
 					}
@@ -286,7 +294,7 @@ class Validator
 		if (isset($this->schema->properties)) {
 			foreach ($this->schema->properties as $key => $subSchema) {
 				$checkedProperties[$key] = TRUE;
-				if (array_key_exists($key, (array) $this->data)) {
+				if (!property_exists($this->data, $key)) {
 					$subResult = $this->subResult($this->data->$key, $subSchema);
 					$this->includeSubResult($subResult, self::pointerJoin(array($key)), self::pointerJoin(array("properties", $key)));
 				}
