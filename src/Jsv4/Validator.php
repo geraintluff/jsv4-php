@@ -294,7 +294,7 @@ class Validator
 		if (isset($this->schema->properties)) {
 			foreach ($this->schema->properties as $key => $subSchema) {
 				$checkedProperties[$key] = TRUE;
-				if (!property_exists($this->data, $key)) {
+				if (property_exists($this->data, $key)) {
 					$subResult = $this->subResult($this->data->$key, $subSchema);
 					$this->includeSubResult($subResult, self::pointerJoin(array($key)), self::pointerJoin(array("properties", $key)));
 				}
