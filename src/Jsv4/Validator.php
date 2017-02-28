@@ -213,16 +213,13 @@ class Validator
 							return;
 						}
 					} else if ($type == "string") {
-						if (is_numeric($this->data)) {
-							$this->data = "" . $this->data;
-							return;
-						} else if (is_bool($this->data)) {
+						if (is_bool($this->data)) {
 							$this->data = $this->data? "true" : "false";
 							return;
 						} else if (is_null($this->data)) {
 							$this->data = "";
 							return;
-						} else {
+						} else if (is_scalar($this->data)) {
 							$this->data = (string) $this->data;
 							return;
 						}
