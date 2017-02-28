@@ -177,10 +177,8 @@ class Validator
 	private function checkTypes()
 	{
 		if (isset($this->schema->type)) {
-			$types = $this->schema->type;
-			if (!is_array($types)) {
-				$types = [$types];
-			}
+			$types = (array) $this->schema->type;
+
 			foreach ($types as $type) {
 				if ($type == "object" && is_object($this->data)) {
 					return;
@@ -219,10 +217,13 @@ class Validator
 							$this->data = "" . $this->data;
 							return;
 						} else if (is_bool($this->data)) {
-							$this->data = ($this->data) ? "true" : "false";
+							$this->data = $this->data? "true" : "false";
 							return;
 						} else if (is_null($this->data)) {
 							$this->data = "";
+							return;
+						} else {
+							$this->data = (string) $this->data;
 							return;
 						}
 					} else if ($type == "boolean") {
