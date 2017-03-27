@@ -177,10 +177,8 @@ class Validator
 	private function checkTypes()
 	{
 		if (isset($this->schema->type)) {
-			$types = $this->schema->type;
-			if (!is_array($types)) {
-				$types = [$types];
-			}
+			$types = (array) $this->schema->type;
+
 			foreach ($types as $type) {
 				if ($type == "object" && is_object($this->data)) {
 					return;
@@ -215,14 +213,14 @@ class Validator
 							return;
 						}
 					} else if ($type == "string") {
-						if (is_numeric($this->data)) {
-							$this->data = "" . $this->data;
-							return;
-						} else if (is_bool($this->data)) {
-							$this->data = ($this->data) ? "true" : "false";
+						if (is_bool($this->data)) {
+							$this->data = $this->data? "true" : "false";
 							return;
 						} else if (is_null($this->data)) {
 							$this->data = "";
+							return;
+						} else if (is_scalar($this->data)) {
+							$this->data = (string) $this->data;
 							return;
 						}
 					} else if ($type == "boolean") {
@@ -239,6 +237,14 @@ class Validator
 							$this->data = FALSE;
 							return;
 						}
+					} else if ($type == "object") {
+						if (is_array($this->data)) {
+							$this->data = (object) $this->data;
+							return;
+						}
+					} else if ($type == "array") {
+						$this->data = (array) $this->data;
+						return;
 					}
 				}
 			}
@@ -274,7 +280,7 @@ class Validator
 		}
 		if (isset($this->schema->required)) {
 			foreach ($this->schema->required as $index => $key) {
-				if (!array_key_exists($key, (array) $this->data)) {
+				if (!property_exists($this->data, $key)) {
 					if ($this->coerce && $this->createValueForProperty($key)) {
 						continue;
 					}
@@ -286,7 +292,7 @@ class Validator
 		if (isset($this->schema->properties)) {
 			foreach ($this->schema->properties as $key => $subSchema) {
 				$checkedProperties[$key] = TRUE;
-				if (array_key_exists($key, (array) $this->data)) {
+				if (property_exists($this->data, $key)) {
 					$subResult = $this->subResult($this->data->$key, $subSchema);
 					$this->includeSubResult($subResult, self::pointerJoin(array($key)), self::pointerJoin(array("properties", $key)));
 				}
