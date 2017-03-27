@@ -48,7 +48,7 @@ class Validator
 		$this->firstErrorOnly	 = $firstErrorOnly;
 		$this->coerce			 = $coerce;
 		$this->valid			 = TRUE;
-		$this->errors			 = [];
+		$this->errors			 = array();
 
 		try {
 			$this->checkTypes();
@@ -179,7 +179,7 @@ class Validator
 		if (isset($this->schema->type)) {
 			$types = $this->schema->type;
 			if (!is_array($types)) {
-				$types = [$types];
+				$types = array($types);
 			}
 			foreach ($types as $type) {
 				if ($type == "object" && is_object($this->data)) {
@@ -282,7 +282,7 @@ class Validator
 				}
 			}
 		}
-		$checkedProperties = [];
+		$checkedProperties = array();
 		if (isset($this->schema->properties)) {
 			foreach ($this->schema->properties as $key => $subSchema) {
 				$checkedProperties[$key] = TRUE;
@@ -309,7 +309,9 @@ class Validator
 				if (isset($checkedProperties[$key])) {
 					continue;
 				}
-				if (!$additionalProperties) {
+				if (!$additionalProperties and $this->coerce) {
+					unset($this->data->$key);
+				} else if(!$additionalProperties) {
 					$this->fail(self::OBJECT_ADDITIONAL_PROPERTIES, self::pointerJoin(array($key)), "/additionalProperties", "Additional properties not allowed");
 				} else if (is_object($additionalProperties)) {
 					$subResult = $this->subResult($subValue, $additionalProperties);
@@ -483,7 +485,7 @@ class Validator
 			}
 		}
 		if (isset($this->schema->anyOf)) {
-			$failResults = [];
+			$failResults = array();
 			foreach ($this->schema->anyOf as $index => $subSchema) {
 				$subResult = $this->subResult($this->data, $subSchema, FALSE);
 				if ($subResult->valid) {
@@ -494,7 +496,7 @@ class Validator
 			$this->fail(self::ANY_OF_MISSING, "", "/anyOf", "Value must satisfy at least one of the options", $failResults);
 		}
 		if (isset($this->schema->oneOf)) {
-			$failResults	 = [];
+			$failResults	 = array();
 			$successIndex	 = NULL;
 			foreach ($this->schema->oneOf as $index => $subSchema) {
 				$subResult = $this->subResult($this->data, $subSchema, FALSE);
@@ -555,7 +557,7 @@ class Validator
 				} elseif (in_array("object", $types)) {
 					$this->data->$key = new \StdClass;
 				} elseif (in_array("array", $types)) {
-					$this->data->$key = [];
+					$this->data->$key = array();
 				} else {
 					return FALSE;
 				}
