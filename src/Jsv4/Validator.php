@@ -417,12 +417,12 @@ class Validator
 			return;
 		}
 		if (isset($this->schema->minLength)) {
-			if (strlen($this->data) < $this->schema->minLength) {
+			if (mb_strlen($this->data) < $this->schema->minLength) {
 				$this->fail(self::STRING_LENGTH_SHORT, "", "/minLength", "String must be at least {$this->schema->minLength} characters long");
 			}
 		}
 		if (isset($this->schema->maxLength)) {
-			if (strlen($this->data) > $this->schema->maxLength) {
+			if (mb_strlen($this->data) > $this->schema->maxLength) {
 				$this->fail(self::STRING_LENGTH_LONG, "", "/maxLength", "String must be at most {$this->schema->maxLength} characters long");
 			}
 		}
