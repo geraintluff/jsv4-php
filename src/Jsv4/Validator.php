@@ -176,6 +176,9 @@ class Validator
 
 	private function checkTypes()
 	{
+		if (empty($this->schema->required) && is_null($this->data)) {
+			return;
+		}
 		if (isset($this->schema->type)) {
 			$types = $this->schema->type;
 			if (!is_array($types)) {
